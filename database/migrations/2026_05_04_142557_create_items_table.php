@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('estimated_days');
             $table->date('date_started')->nullable();
             $table->date('date_ended')->nullable();
-            $table->integer('workers');
+            $table->integer('worker_count');
             $table->float('worker_rate');
             $table->timestamps();
         });

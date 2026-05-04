@@ -42,4 +42,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Worker::class);
     }
+
+    public function isRole(string $role): bool
+    {
+        return $this->role == $role;
+    }
 }
