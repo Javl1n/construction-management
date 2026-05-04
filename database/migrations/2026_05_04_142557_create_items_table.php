@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('work_id')->constrained()->cascadeOnDelete();
+            $table->integer('priority');
             $table->integer('estimated_days');
             $table->date('date_started')->nullable();
             $table->date('date_ended')->nullable();

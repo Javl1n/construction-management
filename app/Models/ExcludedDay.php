@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[Fillable(['date'])]
 class ExcludedDay extends Model
 {
-    //
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
 }
