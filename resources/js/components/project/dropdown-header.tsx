@@ -4,6 +4,7 @@ import { Link, router, usePage } from "@inertiajs/react";
 import { Auth, Project } from "@/types";
 import { Plus } from "lucide-react";
 import projectRoutes from "@/routes/projects";
+import CreateProjectDialog from "./create-dialog";
 
 export default function DropdownHeader({ children }: { children: ReactNode }) {
     const { projects, project, auth } = usePage<{ projects: Project[], project: Project, auth: Auth }>().props;
@@ -20,7 +21,7 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
             <DropdownMenuTrigger asChild>
                 {children}
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent side="right">
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
                     Projects
                 </DropdownMenuLabel>
@@ -37,10 +38,14 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
                     </DropdownMenuItem>
                 }
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="">
-                    <Plus />
-                    Create Project
-                </DropdownMenuItem>
+                <CreateProjectDialog>
+                    <DropdownMenuItem onSelect={e => e.preventDefault()}>
+                        <>
+                            <Plus />
+                            Create Project
+                        </>
+                    </DropdownMenuItem>
+                </CreateProjectDialog>
             </DropdownMenuContent>
         </DropdownMenu>
     )

@@ -4,7 +4,6 @@ import { dashboard } from '@/routes';
 import { Project } from '@/types';
 
 export default function AdminDashboard() {
-    const { project } = usePage<{ project: Project }>().props;
 
     return (
         <>

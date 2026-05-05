@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Worker;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreWorkerRequest extends FormRequest
 {
@@ -12,7 +14,7 @@ class StoreWorkerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->can('create', Worker::class);
     }
 
     /**
@@ -23,7 +25,13 @@ class StoreWorkerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('workers')->where(
+                    fn($query) => $query->where('user_id', $this->user()->id),
+                )
+            ],
         ];
     }
 }

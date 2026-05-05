@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
@@ -14,10 +15,7 @@ class ProjectController extends Controller
      */
     protected function index()
     {
-        /** @var \Illuminate\Auth\SessionGuard $auth **/
-        $auth = auth();
-
-        return $auth->user()->projects;
+        //
     }
 
     public function switch(Request $request)
@@ -28,7 +26,7 @@ class ProjectController extends Controller
 
         session(['current_project_id' => $project->id]);
 
-        return back();
+        return Inertia::location(route('projects.show'));
     }
 
     /**
@@ -46,6 +44,10 @@ class ProjectController extends Controller
     {
         $validated = $request->validated();
         $project = $request->user()->projects()->create($validated);
+
+        session(['current_project_id' => $project->id]);
+
+        return Inertia::location(route('projects.show'));
     }
 
     /**

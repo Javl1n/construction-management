@@ -17,7 +17,8 @@ export default function CreateProjectDialog({ children }: { children: ReactNode 
 
     const save = () => {
         post(projects.store().url, {
-
+            preserveState: false,
+            preserveScroll: false,
         });
     }
 

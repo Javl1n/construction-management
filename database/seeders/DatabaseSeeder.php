@@ -26,5 +26,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'engineer@gmail.com',
             'role' => 'engineer',
         ]);
+
+        $this->call([
+            WorkerSeeder::class,
+        ]);
     }
 }

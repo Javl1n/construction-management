@@ -5,15 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreWorkerRequest;
 use App\Http\Requests\UpdateWorkerRequest;
 use App\Models\Worker;
+use Illuminate\Http\Request;
 
 class WorkerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // dd($request->user()->workers);
+        return inertia('workers/index', [
+            "workers" => $request->user()->workers
+        ]);
     }
 
     /**
@@ -29,7 +33,11 @@ class WorkerController extends Controller
      */
     public function store(StoreWorkerRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $worker = $request->user()->workers()->create($validated);
+
+        return back();
     }
 
     /**
