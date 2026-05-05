@@ -1,6 +1,7 @@
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { FolderClosed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import CreateProjectDialog from './create-dialog';
 
 export default function EmptyProject() {
     return (
@@ -15,9 +16,11 @@ export default function EmptyProject() {
                 </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-                <Button>
-                    Create Project
-                </Button>
+                <CreateProjectDialog>
+                    <Button>
+                        Create Project
+                    </Button>
+                </CreateProjectDialog>
             </EmptyContent>
         </Empty>
     )

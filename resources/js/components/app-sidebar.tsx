@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -14,17 +14,21 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
+import type { NavItem, Project } from '@/types';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import DropdownHeader from './project/dropdown-header';
+import projects from '@/routes/projects';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+const mainNavItems: () => NavItem[] = () => {
+    const { project } = usePage<{ project: Project }>().props;
+    return [
+        {
+            title: 'Dashboard',
+            href: projects.show(),
+            icon: LayoutGrid,
+        },
+    ]
+};
 
 const footerNavItems: NavItem[] = [
     // {
@@ -55,7 +59,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={mainNavItems()} />
             </SidebarContent>
 
             <SidebarFooter>

@@ -1,14 +1,22 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { usePage } from "@inertiajs/react";
-import { Project } from "@/types";
+import { Link, router, usePage } from "@inertiajs/react";
+import { Auth, Project } from "@/types";
 import { Plus } from "lucide-react";
+import projectRoutes from "@/routes/projects";
 
 export default function DropdownHeader({ children }: { children: ReactNode }) {
-    const { projects, project } = usePage<{ projects: Project[], project: Project }>().props;
+    const { projects, project, auth } = usePage<{ projects: Project[], project: Project, auth: Auth }>().props;
+    const [isOpen, setIsOpen] = useState(false);
+
+    const switchProject = (id: number) => {
+        router.post(projectRoutes.switch().url, {
+            project_id: id
+        });
+    }
 
     return (
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={setIsOpen} open={auth.user.role == 'engineer' && isOpen}>
             <DropdownMenuTrigger asChild>
                 {children}
             </DropdownMenuTrigger>
@@ -18,8 +26,8 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
                 </DropdownMenuLabel>
                 {projects.length > 0 ?
                     projects.map(project =>
-                        <DropdownMenuItem>
-
+                        <DropdownMenuItem onClick={() => switchProject(project.id)} key={project.id}>
+                            {project.name}
                         </DropdownMenuItem>
                     )
 

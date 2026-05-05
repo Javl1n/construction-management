@@ -5,15 +5,30 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    protected function index()
     {
-        //
+        /** @var \Illuminate\Auth\SessionGuard $auth **/
+        $auth = auth();
+
+        return $auth->user()->projects;
+    }
+
+    public function switch(Request $request)
+    {
+        $projectId = $request->input('project_id');
+
+        $project = $request->user()->projects()->findOrFail($projectId);
+
+        session(['current_project_id' => $project->id]);
+
+        return back();
     }
 
     /**
@@ -29,7 +44,8 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $project = $request->user()->projects()->create($validated);
     }
 
     /**
@@ -37,7 +53,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        return inertia('dashboard');
     }
 
     /**

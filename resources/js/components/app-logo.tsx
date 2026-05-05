@@ -1,11 +1,11 @@
 import AppLogoIcon from '@/components/app-logo-icon';
-import { Project } from '@/types';
+import { Auth, Project } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 
 export default function AppLogo() {
-    const { project, auth: { user: { role, ...user } } } = usePage<{ project: Project }>().props;
+    const { project, auth: { user: { role, ...user } } } = usePage<{ project: Project, auth: Auth }>().props;
 
     return (
         <>
@@ -18,7 +18,7 @@ export default function AppLogo() {
                     {role == 'engineer' && (project ? project.name : <span className='text-muted-foreground'>No Projects Yet</span>)}
                 </span>
             </div>
-            <ChevronsUpDown className='ml-auto' />
+            {role == 'engineer' && <ChevronsUpDown className='ml-auto' />}
         </>
     );
 }
