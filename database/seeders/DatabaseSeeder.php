@@ -27,8 +27,6 @@ class DatabaseSeeder extends Seeder
             'role' => 'engineer',
         ]);
 
-        $this->call([
-            WorkerSeeder::class,
-        ]);
+        $this->call([]);
     }
 }

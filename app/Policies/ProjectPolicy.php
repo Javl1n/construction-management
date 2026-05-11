@@ -29,7 +29,7 @@ class ProjectPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isRole('engineer');
+        return true;
     }
 
     /**

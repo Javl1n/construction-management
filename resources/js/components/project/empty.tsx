@@ -1,5 +1,5 @@
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { FolderClosed } from 'lucide-react';
+import { FolderClosed, HardHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CreateProjectDialog from './create-dialog';
 
@@ -8,7 +8,7 @@ export default function EmptyProject() {
         <Empty>
             <EmptyHeader>
                 <EmptyMedia variant={'icon'}>
-                    <FolderClosed />
+                    <HardHat />
                 </EmptyMedia >
                 <EmptyTitle>No Projects Yet</EmptyTitle>
                 <EmptyDescription>

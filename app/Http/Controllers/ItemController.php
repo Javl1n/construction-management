@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Models\Item;
+use App\Models\User;
 
 class ItemController extends Controller
 {
@@ -21,7 +22,11 @@ class ItemController extends Controller
      */
     public function create()
     {
-        //
+        $engineers = User::whereNot('role', 'encoder')->get();
+
+
+
+        return inertia()->render('plans/create');
     }
 
     /**

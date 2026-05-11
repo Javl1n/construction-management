@@ -11,15 +11,14 @@ export default function AppLogo() {
     return (
         <>
             <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                <DynamicIcon name={project.icon} className="size-5 text-white dark:text-black" />
+                <DynamicIcon name={project ? project.icon : 'hard-hat'} className="size-5 text-white dark:text-black" />
             </div>
             <div className="ml-1 grid flex-1 text-left text-sm">
                 <span className="mb-0.5 truncate leading-tight font-semibold">
-                    {role == 'admin' && 'Admin Dashboard'}
-                    {role == 'engineer' && (project ? project.name : <span className='text-muted-foreground'>No Projects Yet</span>)}
+                    {(project ? project.name : <span className='text-muted-foreground'>No Projects Yet</span>)}
                 </span>
             </div>
-            {role == 'engineer' && <ChevronsUpDown className='ml-auto' />}
+            <ChevronsUpDown className='ml-auto' />
         </>
     );
 }

@@ -8,7 +8,7 @@ import CreateProjectDialog from "./create-dialog";
 import { DynamicIcon } from "lucide-react/dynamic";
 
 export default function DropdownHeader({ children }: { children: ReactNode }) {
-    const { projects, project, auth } = usePage<{ projects: Project[], project: Project, auth: Auth }>().props;
+    const { projects } = usePage<{ projects: Project[], project: Project, auth: Auth }>().props;
     const [isOpen, setIsOpen] = useState(false);
 
     const switchProject = (id: number) => {
@@ -18,7 +18,7 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
     }
 
     return (
-        <DropdownMenu onOpenChange={setIsOpen} open={auth.user.role == 'engineer' && isOpen}>
+        <DropdownMenu onOpenChange={setIsOpen} open={isOpen}>
             <DropdownMenuTrigger asChild>
                 {children}
             </DropdownMenuTrigger>
@@ -31,7 +31,7 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
                         <DropdownMenuItem onClick={() => switchProject(project.id)} key={project.id}>
                             <>
                                 <div className="border p-1 rounded">
-                                    <DynamicIcon name={project.icon} className="stroke-white" />
+                                    <DynamicIcon name={project.icon} className="stroke-foreground" />
                                 </div>
                                 {project.name}
                             </>
@@ -46,7 +46,7 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
                     <DropdownMenuItem onSelect={e => e.preventDefault()}>
                         <>
                             <div className="border p-1 rounded">
-                                <Plus className="stroke-white" />
+                                <Plus className="stroke-foreground" />
                             </div>
                             Create Project
                         </>

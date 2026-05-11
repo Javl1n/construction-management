@@ -7,6 +7,7 @@ import { useForm } from "@inertiajs/react";
 import projects from "@/routes/projects";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
 import { IconPicker } from "../ui/icon-picker";
+import IconNameField from "./icon-name-input";
 
 export type CreateProjectType = {
     name: string;
@@ -14,10 +15,12 @@ export type CreateProjectType = {
 }
 
 export default function CreateProjectDialog({ children }: { children: ReactNode }) {
-    const { data, setData, errors, post, processing } = useForm<CreateProjectType>({
+    const form = useForm<CreateProjectType>({
         name: '',
         icon: 'house',
     });
+
+    const { data, setData, errors, post, processing } = form
 
     const save = () => {
         post(projects.store().url, {
@@ -40,22 +43,7 @@ export default function CreateProjectDialog({ children }: { children: ReactNode 
                         Enter the name of the project you want to make, then click save.
                     </DialogDescription>
                 </DialogHeader>
-                <Field className="gap-2">
-                    <FieldLabel htmlFor="name">
-                        Project Name
-                    </FieldLabel>
-                    <div className='flex gap-2'>
-                        <IconPicker value={data.icon} onValueChange={(value) => setData('icon', value)} categorized={false}>
-                            <Button variant={'outline'}>
-                                <DynamicIcon name={data.icon} />
-                            </Button>
-                        </IconPicker>
-                        <Input id="name" name="name" placeholder="Camella Construction Project 1" value={data.name} onChange={e => setData('name', e.target.value)} />
-                    </div>
-                    <FieldError>
-                        {errors.name}
-                    </FieldError>
-                </Field>
+                <IconNameField form={form} />
                 <DialogFooter>
                     <Button onClick={save}>
                         Save

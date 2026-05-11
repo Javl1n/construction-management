@@ -47,7 +47,7 @@ class ProjectController extends Controller
 
         session(['current_project_id' => $project->id]);
 
-        return Inertia::location(route('projects.show'));
+        return Inertia::location(route('items.create'));
     }
 
     /**
