@@ -36,8 +36,7 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
                                 {project.name}
                             </>
                         </DropdownMenuItem>
-                    )
-                    :
+                    ) :
                     <DropdownMenuItem disabled className="justify-center text-sm">
                         No Projects Yet
                     </DropdownMenuItem>

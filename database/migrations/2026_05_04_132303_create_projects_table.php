@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->string('name');
             $table->string('icon');
+            $table->integer('planned_days');
+            $table->date('date_started')->nullable();
+            $table->date('date_ended')->nullable();
             $table->timestamps();
         });
     }
