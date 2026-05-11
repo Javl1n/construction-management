@@ -10,11 +10,16 @@ import projects from '@/routes/projects';
 import { Button } from '@/components/ui/button';
 import TextLink from '@/components/text-link';
 import { logout } from '@/routes';
+import { IconName, IconPicker } from "@/components/ui/icon-picker";
+import { useState } from 'react';
+import { DynamicIcon } from 'lucide-react/dynamic';
 
 export default function EmptyDashboard() {
     const { data, setData, errors, post, processing } = useForm<CreateProjectType>({
         name: '',
+        icon: 'house',
     });
+
 
     const save = () => {
         post(projects.store().url, {
@@ -27,17 +32,14 @@ export default function EmptyDashboard() {
                 <FieldLabel htmlFor="name">
                     Project Name
                 </FieldLabel>
-                <Input id="name" name="name" placeholder="Camella Construction Project 1" value={data.name} onChange={e => setData('name', e.target.value)} />
-                <FieldError>
-                    {errors.name}
-                </FieldError>
-            </Field>
-
-            <Field className='gap-2'>
-                <FieldLabel htmlFor="name">
-                    Project Name
-                </FieldLabel>
-                <Input id="name" name="name" placeholder="Camella Construction Project 1" value={data.name} onChange={e => setData('name', e.target.value)} />
+                <div className='flex gap-2'>
+                    <IconPicker value={data.icon} onValueChange={(value) => setData('icon', value)} categorized={false}>
+                        <Button variant={'outline'}>
+                            <DynamicIcon name={data.icon} />
+                        </Button>
+                    </IconPicker>
+                    <Input id="name" name="name" placeholder="Camella Construction Project 1" value={data.name} onChange={e => setData('name', e.target.value)} />
+                </div>
                 <FieldError>
                     {errors.name}
                 </FieldError>

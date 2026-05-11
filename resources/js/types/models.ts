@@ -1,3 +1,4 @@
+import { IconName } from "lucide-react/dynamic"
 import { User } from "./auth"
 
 export type ExcludedDay = {
@@ -69,6 +70,7 @@ export type Project = {
     id: number
     user_id: number
     name: string
+    icon: IconName
     created_at: string | null
     updated_at: string | null
     // relations

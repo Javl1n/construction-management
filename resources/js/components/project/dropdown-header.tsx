@@ -5,6 +5,7 @@ import { Auth, Project } from "@/types";
 import { Plus } from "lucide-react";
 import projectRoutes from "@/routes/projects";
 import CreateProjectDialog from "./create-dialog";
+import { DynamicIcon } from "lucide-react/dynamic";
 
 export default function DropdownHeader({ children }: { children: ReactNode }) {
     const { projects, project, auth } = usePage<{ projects: Project[], project: Project, auth: Auth }>().props;
@@ -28,7 +29,12 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
                 {projects.length > 0 ?
                     projects.map(project =>
                         <DropdownMenuItem onClick={() => switchProject(project.id)} key={project.id}>
-                            {project.name}
+                            <>
+                                <div className="border p-1 rounded">
+                                    <DynamicIcon name={project.icon} className="stroke-white" />
+                                </div>
+                                {project.name}
+                            </>
                         </DropdownMenuItem>
                     )
 
@@ -41,7 +47,9 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
                 <CreateProjectDialog>
                     <DropdownMenuItem onSelect={e => e.preventDefault()}>
                         <>
-                            <Plus />
+                            <div className="border p-1 rounded">
+                                <Plus className="stroke-white" />
+                            </div>
                             Create Project
                         </>
                     </DropdownMenuItem>

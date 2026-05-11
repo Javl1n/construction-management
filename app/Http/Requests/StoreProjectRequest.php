@@ -31,6 +31,10 @@ class StoreProjectRequest extends FormRequest
                 Rule::unique('projects')->where(
                     fn($query) => $query->where('user_id', $this->user()->id)
                 )
+            ],
+            'icon' => [
+                'required',
+                'string',
             ]
         ];
     }
