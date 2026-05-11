@@ -1,5 +1,5 @@
-import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, FolderGit2, Hammer, LayoutGrid } from 'lucide-react';
+import { usePage } from '@inertiajs/react';
+import { LayoutGrid } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -13,12 +13,9 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
 import type { NavItem, Project } from '@/types';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import DropdownHeader from './project/dropdown-header';
 import projects from '@/routes/projects';
-import workers from '@/routes/workers';
 
 const mainNavItems: () => NavItem[] = () => {
     const { project } = usePage<{ project: Project }>().props;
@@ -28,11 +25,11 @@ const mainNavItems: () => NavItem[] = () => {
             href: projects.show(),
             icon: LayoutGrid,
         },
-        {
-            title: 'Workers',
-            href: workers.index(),
-            icon: Hammer
-        }
+        // {
+        //     title: 'Workers',
+        //     href: workers.index(),
+        //     icon: Hammer
+        // }
     ]
 };
 

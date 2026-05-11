@@ -11,11 +11,6 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request)
     {
-        if ($request->user()->isRole('admin')) {
-            return redirect()->route('admin.dashboard');
-        }
-
-
         $project = $request->user()->projects()->latest()->first();
 
         if (! $project) {

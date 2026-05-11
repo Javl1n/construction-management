@@ -32,6 +32,16 @@ export default function EmptyDashboard() {
                     {errors.name}
                 </FieldError>
             </Field>
+
+            <Field className='gap-2'>
+                <FieldLabel htmlFor="name">
+                    Project Name
+                </FieldLabel>
+                <Input id="name" name="name" placeholder="Camella Construction Project 1" value={data.name} onChange={e => setData('name', e.target.value)} />
+                <FieldError>
+                    {errors.name}
+                </FieldError>
+            </Field>
             <Button onClick={save}>
                 Save
             </Button>

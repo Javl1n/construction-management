@@ -21,16 +21,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
-            public function toResponse($request)
-            {
-                if ($request->user()->isRole('admin')) {
-                    return redirect()->route('admin.dashboard');
-                }
-
-                return redirect()->route('dashboard');
-            }
-        });
+        //
     }
 
     /**

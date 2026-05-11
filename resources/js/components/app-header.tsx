@@ -32,8 +32,8 @@ import { UserMenuContent } from '@/components/user-menu-content';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useInitials } from '@/hooks/use-initials';
 import { cn, toUrl } from '@/lib/utils';
-import type { Auth, BreadcrumbItem, NavItem } from '@/types';
-import admin from '@/routes/admin';
+import { dashboard } from '@/routes';
+import type { BreadcrumbItem, NavItem } from '@/types';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];
@@ -42,29 +42,29 @@ type Props = {
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: admin.dashboard(),
+        href: dashboard(),
         icon: LayoutGrid,
     },
 ];
 
 const rightNavItems: NavItem[] = [
-    // {
-    //     title: 'Repository',
-    //     href: 'https://github.com/laravel/react-starter-kit',
-    //     icon: Folder,
-    // },
-    // {
-    //     title: 'Documentation',
-    //     href: 'https://laravel.com/docs/starter-kits#react',
-    //     icon: BookOpen,
-    // },
+    {
+        title: 'Repository',
+        href: 'https://github.com/laravel/react-starter-kit',
+        icon: Folder,
+    },
+    {
+        title: 'Documentation',
+        href: 'https://laravel.com/docs/starter-kits#react',
+        icon: BookOpen,
+    },
 ];
 
 const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
 export function AppHeader({ breadcrumbs = [] }: Props) {
-    const page = usePage<{ auth: Auth }>();
+    const page = usePage();
     const { auth } = page.props;
     const getInitials = useInitials();
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
@@ -93,7 +93,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                     Navigation menu
                                 </SheetTitle>
                                 <SheetHeader className="flex justify-start text-left">
-                                    <AppLogoIcon className="h-6 w-6 text-black dark:text-white" />
+                                    <AppLogoIcon className="h-6 w-6 fill-current text-black dark:text-white" />
                                 </SheetHeader>
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
@@ -135,7 +135,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                     </div>
 
                     <Link
-                        href={admin.dashboard()}
+                        href={dashboard()}
                         prefetch
                         className="flex items-center space-x-2"
                     >
@@ -183,7 +183,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                 size="icon"
                                 className="group h-9 w-9 cursor-pointer"
                             >
-                                <Search className="size-5! opacity-80 group-hover:opacity-100" />
+                                <Search className="!size-5 opacity-80 group-hover:opacity-100" />
                             </Button>
                             <div className="ml-1 hidden gap-1 lg:flex">
                                 {rightNavItems.map((item) => (
