@@ -13,9 +13,9 @@ class EnsureUserRole
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        if (! $request->user()->isRole($role)) {
+        if (! $request->user()->hasRole($roles)) {
             abort(403);
         }
 

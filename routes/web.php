@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Route;
@@ -13,16 +14,19 @@ Route::inertia('/', 'welcome', [
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
-    Route::middleware('')->group(function () {
-        Route::inertia('empty-project', 'empty-project')->name('empty-project');
+    Route::inertia('empty-project', 'empty-project')->name('empty-project');
 
-        Route::name('projects.')->prefix('project')->controller(ProjectController::class)
-            ->group(function () {
-                Route::get('/', 'show')->name('show');
-                Route::post('/switch', 'switch')->name('switch');
-                Route::post('/', 'store')->name('store');
-            });
-    });
+    Route::name('projects.')->prefix('project')->controller(ProjectController::class)
+        ->group(function () {
+            Route::get('/', 'show')->name('show');
+            Route::post('/switch', 'switch')->name('switch');
+            Route::post('/', 'store')->name('store');
+        });
+
+    Route::name('items.')->prefix('items')->controller(ItemController::class)
+        ->group(function () {
+            Route::get('create', 'create')->name('create');
+        });
 });
 
 require __DIR__ . '/settings.php';

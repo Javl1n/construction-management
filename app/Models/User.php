@@ -43,8 +43,8 @@ class User extends Authenticatable
         return $this->hasMany(Worker::class);
     }
 
-    public function isRole(string $role): bool
+    public function hasRole(array $roles): bool
     {
-        return $this->role == $role;
+        return in_array($this->role, $roles);
     }
 }

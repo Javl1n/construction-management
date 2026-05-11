@@ -37,7 +37,6 @@ export default function DropdownHeader({ children }: { children: ReactNode }) {
                             </>
                         </DropdownMenuItem>
                     )
-
                     :
                     <DropdownMenuItem disabled className="justify-center text-sm">
                         No Projects Yet
