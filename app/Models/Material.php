@@ -13,11 +13,6 @@ class Material extends Model
     /** @use HasFactory<\Database\Factories\MaterialFactory> */
     use HasFactory;
 
-    public function works(): BelongsToMany
-    {
-        return $this->belongsToMany(Work::class);
-    }
-
     public function items(): BelongsToMany
     {
         return $this->belongsToMany(Item::class)

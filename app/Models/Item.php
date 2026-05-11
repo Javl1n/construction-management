@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-#[Fillable(['date_started', 'estimated_days', 'date_ended', 'workers', 'worker_rate'])]
+#[Fillable(['name', 'date_started', 'estimated_days', 'date_ended', 'workers', 'worker_rate'])]
 class Item extends Model
 {
     /** @use HasFactory<\Database\Factories\ItemFactory> */
@@ -19,20 +19,9 @@ class Item extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function work(): BelongsTo
-    {
-        return $this->belongsTo(Work::class);
-    }
-
     public function materials(): BelongsToMany
     {
         return $this->belongsToMany(Material::class)
             ->withPivot('quantity');
-    }
-
-    public function workers(): BelongsToMany
-    {
-        return $this->belongsToMany(Worker::class)
-            ->withPivot('days_worked');
     }
 }

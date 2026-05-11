@@ -38,11 +38,6 @@ class User extends Authenticatable
         return $this->hasMany(Project::class);
     }
 
-    public function workers(): HasMany
-    {
-        return $this->hasMany(Worker::class);
-    }
-
     public function hasRole(array $roles): bool
     {
         return in_array($this->role, $roles);

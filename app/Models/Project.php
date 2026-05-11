@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'icon'])]
+#[Fillable(['name', 'icon', 'date_started', 'date_ended', 'planned_days'])]
 class Project extends Model
 {
     /** @use HasFactory<\Database\Factories\ProjectFactory> */
@@ -19,11 +19,6 @@ class Project extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function excludedDays(): HasMany
-    {
-        return $this->hasMany(ExcludedDay::class);
-    }
-
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
@@ -32,5 +27,10 @@ class Project extends Model
     public function purchases(): HasMany
     {
         return $this->hasMany(Purchase::class);
+    }
+
+    public function workers(): HasMany
+    {
+        return $this->hasMany(Worker::class);
     }
 }

@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('supervisor_payrolls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->integer('order');
-            $table->integer('planned_days');
-            $table->date('date_started')->nullable();
-            $table->date('date_ended')->nullable();
+            $table->string('role');
+            $table->float('cost');
+            $table->date('paid_at');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('supervisor_payrolls');
     }
 };
