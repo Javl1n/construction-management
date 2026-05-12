@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->string('name');
+            $table->string('icon');
             $table->integer('order');
             $table->integer('planned_days');
             $table->date('date_started')->nullable();

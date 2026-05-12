@@ -12,11 +12,12 @@ interface SectionProps {
 export default function CardSection({ id, onInView, children, registerRef, scrollContainer }: SectionProps) {
     const { ref } = useInView({
         root: scrollContainer,
-        rootMargin: '0px 0px -50% 0px',
+        rootMargin: '0px 0px -80% 0px',
         onChange: (inView) => {
             if (inView) onInView(id);
         }
     })
+
     return (
         <div
             id={id}
