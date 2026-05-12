@@ -1,16 +1,17 @@
+import CardSection from "@/components/card-section";
 import Heading from "@/components/heading";
 import CreateWorkItemCard, { CreateWorkItem } from "@/components/items/create";
 import CreateLaborersCard, { CreateLaborer } from "@/components/laborers/create";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { useCurrentUrl } from "@/hooks/use-current-url";
-import { cn, toUrl } from "@/lib/utils";
+import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import items from "@/routes/items";
 import { Project } from "@/types";
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import { Hammer, Plus, Scan, Users } from "lucide-react";
-import { PropsWithChildren } from "react";
+import { useRef, useState } from "react";
 
 export type CreatePlanProp = {
     laborers: CreateLaborer[]
@@ -18,9 +19,8 @@ export type CreatePlanProp = {
 }
 
 export default function CreateItemsPage() {
-    const { isCurrentOrParentUrl } = useCurrentUrl();
+    const { open } = useSidebar();
     const { project } = usePage<{ project: Project }>().props;
-
 
     const form = useForm<CreatePlanProp>({
         laborers: [{
@@ -50,12 +50,35 @@ export default function CreateItemsPage() {
             data.items.map((item, i) =>
                 i === index ? { ...item, [field]: value } : item
             )
-        )
+        );
     };
 
+    const removeItem = (index: number) => {
+        setData('items',
+            data.items.filter((item, i) =>
+                i !== index
+            )
+        );
+    }
+
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const [active, setActive] = useState('labor');
+
+    const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({
+        labor: null,
+    });
+
+    const scrollTo = (id: string) => {
+        sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    const registerRef = (id: string, el: HTMLDivElement | null) => {
+        if (el) sectionRefs.current[id] = el;
+        else delete sectionRefs.current[id];
+    }
 
     return (
-        <div className="px-4 py-6">
+        <div className="px-4 pt-6">
             <Heading
                 title="Project Plan"
                 description={`Create plan for ${project.name}`}
@@ -70,9 +93,10 @@ export default function CreateItemsPage() {
                         <Button
                             size="sm"
                             variant="ghost"
+                            onClick={() => scrollTo('labor')}
                             asChild
                             className={cn('w-full justify-start', {
-                                'bg-muted': false
+                                'bg-muted': 'labor' === active
                             })}
                         >
                             <div className="">
@@ -85,19 +109,20 @@ export default function CreateItemsPage() {
                                 key={`item-${index}`}
                                 size="sm"
                                 variant="ghost"
+                                onClick={() => scrollTo(`item-card-${index}`)}
                                 asChild
                                 className={cn('w-full justify-start', {
-                                    'bg-muted': false
+                                    'bg-muted': `item-card-${index}` === active
                                 })}
                             >
-                                <Link href={'#'}>
+                                <div >
                                     <div className="h-4 w-4">
                                         <Scan size={42}>
                                             <Hammer size={15} x={5} y={5} />
                                         </Scan>
                                     </div>
                                     {item.name ? item.name : 'New Work Item'}
-                                </Link>
+                                </div>
                             </Button>
                         ))}
                         <Button
@@ -123,16 +148,37 @@ export default function CreateItemsPage() {
 
                 <Separator className="my-6 lg:hidden" />
 
-                <div className="flex-1 md:max-w-2xl">
-                    <section className="max-w-xl space-y-6">
-                        <CreateLaborersCard form={form} />
+                <ScrollArea
+                    ref={scrollContainerRef}
+                    className={cn([
+                        "flex-1",
+                        !open && "md:max-h-[calc(100vh-9.6rem)]",
+                        open && "md:max-h-[calc(100vh-10.6rem)]",
+                    ])}>
+                    <section className="space-y-6 w-xl pb-6">
+                        <CardSection
+                            id="labor"
+                            onInView={setActive}
+                            registerRef={registerRef}
+                            scrollContainer={scrollContainerRef.current}
+                        >
+                            <CreateLaborersCard form={form} />
+                        </CardSection>
                         {data.items.map((item, i) => (
-                            <CreateWorkItemCard key={`item-card-${i}`} item={item}
-                                onChange={(field, value) => updateItem(i, field, value)}
-                                onRemove={() => null} />
+                            <CardSection
+                                key={`item-card-${i}`}
+                                id={`item-card-${i}`}
+                                onInView={setActive}
+                                registerRef={registerRef}
+                                scrollContainer={scrollContainerRef.current}
+                            >
+                                <CreateWorkItemCard item={item}
+                                    onChange={(field, value) => updateItem(i, field, value)}
+                                    onRemove={() => removeItem(i)} />
+                            </CardSection>
                         ))}
                     </section>
-                </div>
+                </ScrollArea>
             </div>
         </div>
     );

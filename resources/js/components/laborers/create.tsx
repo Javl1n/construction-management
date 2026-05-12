@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, Table
 import { Plus, Trash, Users } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { Item, ItemContent, ItemDescription, ItemHeader, ItemMedia, ItemTitle } from "../ui/item";
 
 export type CreateLaborer = {
     role: string
@@ -32,14 +33,21 @@ export default function CreateLaborersCard({ form }: { form: InertiaFormProps<Cr
     }
 
     return (
-        <Card>
+        <Card className="gap-2">
             <CardHeader>
-                <CardTitle>
-                    Labor
-                </CardTitle>
-                <CardDescription>
-                    Manage Laborers and their roles here.
-                </CardDescription>
+                <Item className="p-0">
+                    <ItemMedia variant={'icon'}>
+                        <Users />
+                    </ItemMedia>
+                    <ItemContent>
+                        <CardTitle>
+                            Laborers
+                        </CardTitle>
+                        <CardDescription>
+                            Manage Laborers and their roles here.
+                        </CardDescription>
+                    </ItemContent>
+                </Item>
             </CardHeader>
             <CardContent>
                 <Table>
@@ -47,7 +55,7 @@ export default function CreateLaborersCard({ form }: { form: InertiaFormProps<Cr
                         <TableRow>
                             <TableHead className="">Role</TableHead>
                             <TableHead>Quantity</TableHead>
-                            <TableHead className="">Rate (per hour)</TableHead>
+                            <TableHead className="">Rate (per day)</TableHead>
                             <TableHead></TableHead>
                         </TableRow>
                     </TableHeader>
@@ -55,7 +63,7 @@ export default function CreateLaborersCard({ form }: { form: InertiaFormProps<Cr
                         {data.laborers.map((laborer, index) => (
                             <TableRow key={`laborer-${index}`}>
                                 <TableCell>
-                                    <Input placeholder="labor" value={laborer.role}
+                                    <Input placeholder="Labor" value={laborer.role}
                                         onChange={e => updateLaborer(index, 'role', e.target.value)} />
                                 </TableCell>
                                 <TableCell>
