@@ -96,7 +96,7 @@ export function ScrollNavAsideButton({ children, id }: PropsWithChildren<{
             onClick={() => id && scrollTo(id)}
             asChild
             className={cn('w-full justify-start', {
-                'bg-muted': id && id === active
+                'bg-muted': id === active
             })}
         >
             <div>
@@ -118,7 +118,7 @@ export function ScrollNavContent({ children }: PropsWithChildren) {
                     "md:max-h-[calc(100vh-9.6rem)]": !open,
                     "md:max-h-[calc(100vh-10.6rem)]": open,
                 }])}>
-            <section className="space-y-6 w-2xl pb-20 pt-1">
+            <section className="space-y-6 md:w-2xl pb-20 pt-1">
                 {children}
             </section>
         </ScrollArea>

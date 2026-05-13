@@ -1,5 +1,6 @@
 import CreateWorkItemCard, { CreateWorkItem } from "@/components/items/create";
 import CreateLaborersCard, { CreateLaborer } from "@/components/laborers/create";
+import { MaterialDatalist } from "@/components/materials/datalist";
 import { SortableList, SortableListItem, useSortableList } from "@/components/sortable";
 import { ScrollNavAside, ScrollNavAsideButton, ScrollNavContent, ScrollNavItem, ScrollNavLayout } from "@/layouts/scroll-nav-layout";
 import items from "@/routes/items";
@@ -13,7 +14,7 @@ export type CreatePlanProp = {
     items: CreateWorkItem[]
 }
 
-export default function CreateItemsPage() {
+export default function CreatePlanPage() {
     const { project } = usePage<{ project: Project }>().props;
 
     const form = useForm<CreatePlanProp>({
@@ -27,7 +28,14 @@ export default function CreateItemsPage() {
             id: 0,
             icon: 'hammer',
             planned_days: 5,
-            materials: []
+            materials: [
+                {
+                    name: "",
+                    unit: "",
+                    quantity: 5,
+                    price: 50.0
+                }
+            ]
         }]
     });
 
@@ -77,7 +85,7 @@ export default function CreateItemsPage() {
         }}>
             <ScrollNavAside>
                 <ScrollNavAsideButton id="labor">
-                    <Users className="h-4 w-4" />
+                    <Users />
                     Labor
                 </ScrollNavAsideButton>
                 {items.map((item, index) => {
@@ -118,12 +126,13 @@ export default function CreateItemsPage() {
                         </SortableListItem>
                     ))}
                 </SortableList>
+                <MaterialDatalist />
             </ScrollNavContent>
         </ScrollNavLayout >
     )
 }
 
-CreateItemsPage.layout = {
+CreatePlanPage.layout = {
     breadcrumbs: [
         {
             title: 'Project Plan',

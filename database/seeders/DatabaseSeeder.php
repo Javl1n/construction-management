@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             'role' => 'engineer',
         ]);
 
-        $this->call([]);
+        $this->call([
+            MaterialSeeder::class
+        ]);
     }
 }

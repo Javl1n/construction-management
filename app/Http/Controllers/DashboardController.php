@@ -13,12 +13,11 @@ class DashboardController extends Controller
     {
         $project = $request->user()->projects()->with(['items', 'workers'])->latest()->first();
 
-
         if ($project && !session()->has('current_project_id')) {
             session(['current_project_id' => $project->id]);
         }
 
-        if ($project->items->isEmpty() && $project->workers->isEmpty()) {
+        if ($project && $project->items->isEmpty() && $project->workers->isEmpty()) {
             return redirect()->route('items.create');
         }
 
