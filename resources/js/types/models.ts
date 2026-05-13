@@ -1,49 +1,28 @@
 import { IconName } from "lucide-react/dynamic"
 import { User } from "./auth"
 
-export type ExcludedDay = {
+export interface Item {
     // columns
     id: number
     project_id: number
-    date: string
-    created_at: string | null
-    updated_at: string | null
-    // relations
-    project: Project
-    // counts
-    // exists
-    project_exists: boolean
-}
-
-export type Item = {
-    // columns
-    id: number
-    project_id: number
-    work_id: number
-    priority: number
-    estimated_days: number
+    name: string
+    order: number
+    planned_days: number
     date_started: string | null
     date_ended: string | null
-    worker_count: number
-    worker_rate: number
     created_at: string | null
     updated_at: string | null
     // relations
     project: Project
-    work: Work
     materials: Material[]
-    workers: Worker[]
     // counts
     materials_count: number
-    workers_count: number
     // exists
     project_exists: boolean
-    work_exists: boolean
     materials_exists: boolean
-    workers_exists: boolean
 }
 
-export type Material = {
+export interface Material {
     // columns
     id: number
     name: string
@@ -52,44 +31,44 @@ export type Material = {
     created_at: string | null
     updated_at: string | null
     // relations
-    works: Work[]
     items: Item[]
     purchases: Purchase[]
     // counts
-    works_count: number
     items_count: number
     purchases_count: number
     // exists
-    works_exists: boolean
     items_exists: boolean
     purchases_exists: boolean
 }
 
-export type Project = {
+export interface Project {
     // columns
     id: number
-    user_id: number
+    user_id: number | null
     name: string
     icon: IconName
+    planned_days: number | null
+    date_started: string | null
+    date_ended: string | null
     created_at: string | null
     updated_at: string | null
     // relations
     user: User
-    excluded_days: ExcludedDay[]
     items: Item[]
     purchases: Purchase[]
+    workers: Worker[]
     // counts
-    excluded_days_count: number
     items_count: number
     purchases_count: number
+    workers_count: number
     // exists
     user_exists: boolean
-    excluded_days_exists: boolean
     items_exists: boolean
     purchases_exists: boolean
+    workers_exists: boolean
 }
 
-export type Purchase = {
+export interface Purchase {
     // columns
     id: number
     project_id: number
@@ -106,37 +85,72 @@ export type Purchase = {
     materials_exists: boolean
 }
 
-export type Work = {
+export interface SupervisorPayroll {
     // columns
     id: number
-    name: string
+    role: string
+    cost: number
+    paid_at: string
     created_at: string | null
     updated_at: string | null
-    // relations
-    items: Item[]
-    materials: Material[]
-    // counts
-    items_count: number
-    materials_count: number
-    // exists
-    items_exists: boolean
-    materials_exists: boolean
 }
 
-export type Worker = {
+// export interface User {
+//     // columns
+//     id: number
+//     role: string
+//     name: string
+//     email: string
+//     email_verified_at: string | null
+//     password?: string
+//     remember_token?: string | null
+//     created_at: string | null
+//     updated_at: string | null
+//     two_factor_secret?: string | null
+//     two_factor_recovery_codes?: string | null
+//     two_factor_confirmed_at: string | null
+//     // relations
+//     projects: Project[]
+//     // notifications: DatabaseNotification[]
+//     // counts
+//     projects_count: number
+//     notifications_count: number
+//     // exists
+//     projects_exists: boolean
+//     notifications_exists: boolean
+// }
+
+export interface Worker {
     // columns
     id: number
-    user_id: number
-    name: string
+    project_id: number
+    role: string
+    quantity: number
+    rate: number
     created_at: string | null
     updated_at: string | null
     // relations
-    user: User
-    items: Item[]
+    project: Project
+    payroll: WorkerPayroll[]
     // counts
-    items_count: number
+    payroll_count: number
     // exists
-    user_exists: boolean
-    items_exists: boolean
+    project_exists: boolean
+    payroll_exists: boolean
+}
+
+export interface WorkerPayroll {
+    // columns
+    id: number
+    worker_id: number
+    cost: number
+    paid_at: string
+    created_at: string | null
+    updated_at: string | null
+    // relations
+    worker: Worker
+    // counts
+    // exists
+    worker_exists: boolean
 }
 
