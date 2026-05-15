@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('supervisor_payrolls', function (Blueprint $table) {
+        Schema::create('prerequisites', function (Blueprint $table) {
             $table->id();
-            $table->string('role');
-            $table->float('cost');
-            $table->date('paid_at');
             $table->timestamps();
         });
     }
@@ -25,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('supervisor_payrolls');
+        Schema::dropIfExists('prerequisites');
     }
 };
