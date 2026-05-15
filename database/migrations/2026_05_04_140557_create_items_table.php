@@ -16,10 +16,10 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('icon');
-            $table->integer('order');
-            $table->integer('planned_days');
-            $table->date('date_started')->nullable();
-            $table->date('date_ended')->nullable();
+            $table->float('quantity');
+            $table->string('unit');
+            $table->integer('days');
+            $table->boolean('completed');
             $table->timestamps();
         });
     }
