@@ -11,16 +11,43 @@ import { Auth, User } from "@/types";
 import EngineerCombobox from "../engineers/combobox";
 import SelectEngineer from "../engineers/select";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "../ui/input-group";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
+import { CreateWorkItem } from "../items/create";
 
-export default function ProjectEssentialsForm({ form }: { form: InertiaFormProps<CreatePlanProp> }) {
-    const { data, setData } = form;
+export default function ProjectEssentialsForm({ form: { data, setData } }: { form: InertiaFormProps<CreatePlanProp> }) {
     // const labor_cost = (
     //     data.laborers.map(
     //         (laborer) => laborer.quantity * laborer.rate
     //     ).reduce((acc, val) => acc + val, 0)
     //     * data.planned_days
     // )
+
+    const itemTotal = (item: CreateWorkItem) => {
+        const materialCost = (
+            item.materials.map(
+                (material) => material.quantity * material.price
+            ).reduce((acc, val) => acc + val, 0)
+        )
+
+        const laborCost = (
+            item.laborers.map(
+                (laborer) => laborer.quantity * laborer.rate
+            ).reduce((acc, val) => acc + val, 0)
+        )
+
+        const equipmentCost = (
+            item.equipment.map(
+                (equipment) => equipment.quantity * equipment.rate
+            ).reduce((acc, val) => acc + val, 0)
+        )
+
+        return materialCost + laborCost + equipmentCost;
+    }
+
+    const total = (
+        data.items.map((item) => itemTotal(item))
+            .reduce((acc, val) => acc + val, 0)
+    )
 
     return (
         <Card>
@@ -73,8 +100,11 @@ export default function ProjectEssentialsForm({ form }: { form: InertiaFormProps
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>
-                                Name
+                            <TableHead className="w-full">
+                                Item
+                            </TableHead>
+                            <TableHead className="text-center">
+                                Days
                             </TableHead>
                             <TableHead className="text-end">
                                 Cost
@@ -82,17 +112,50 @@ export default function ProjectEssentialsForm({ form }: { form: InertiaFormProps
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {/* <TableRow> */}
-                        {/*     <TableCell className="font-bold"> */}
-                        {/*         Labor */}
-                        {/*     </TableCell> */}
-                        {/*     <TableCell className="text-end text-muted-foreground font-mono text-xs"> */}
-                        {/*         {(labor_cost.toLocaleString('en-US', { */}
-                        {/*             minimumFractionDigits: 2, maximumFractionDigits: 2 */}
-                        {/*         }))} */}
-                        {/*     </TableCell> */}
-                        {/* </TableRow> */}
+                        {data.items.map((item, index) => (
+                            <TableRow key={index}>
+                                <TableCell className="w-full">
+                                    {item.name ? item.name : `Work Item ${item.id}`}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {item.planned_days}
+                                </TableCell>
+                                <TableCell className="text-end">
+                                    <div className="flex gap-2 justify-between">
+                                        <span>
+                                            &#8369;
+                                        </span>
+                                        <span className="font-mono">
+                                            {(itemTotal(item)).toLocaleString('en-US', {
+                                                maximumFractionDigits: 2,
+                                                minimumFractionDigits: 2
+                                            })}
+                                        </span>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
+                    <TableFooter>
+                        <TableRow>
+                            <TableCell colSpan={2}>
+                                Total
+                            </TableCell>
+                            <TableCell>
+                                <div className="flex gap-2 justify-between font-bold">
+                                    <span>
+                                        &#8369;
+                                    </span>
+                                    <span className="font-mono">
+                                        {total.toLocaleString('en-US', {
+                                            maximumFractionDigits: 2,
+                                            minimumFractionDigits: 2
+                                        })}
+                                    </span>
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    </TableFooter>
                 </Table>
             </CardContent>
         </Card>

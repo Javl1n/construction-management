@@ -5,77 +5,77 @@ import { Button } from "../ui/button";
 import { Worker } from "@/types";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
+import { Equipment } from "@/types"
 
-export type CreateLaborer = {
-    role: Worker['role']
-    quantity: Worker['quantity']
-    rate: Worker['rate']
+export type CreateEquipment = {
+    name: Equipment['name']
+    quantity: Equipment['quantity']
+    rate: Equipment['rate']
 }
 
-export default function CreateLaborersTable({ laborers, onChange }: {
-    laborers: CreateLaborer[],
-    onChange: (laborers: CreateLaborer[]) => void
+export default function CreateEquipmentTable({ equipment, onChange }: {
+    equipment: CreateEquipment[],
+    onChange: (equipment: CreateEquipment[]) => void
 }) {
-    const addLabor = () => {
-        onChange([...laborers, {
-            role: '',
+    const addEquipment = () => {
+        onChange([...equipment, {
+            name: '',
             quantity: 1,
             rate: 250.00
         }])
     }
 
-    const updateLaborer = (index: number, field: keyof CreateLaborer, value: CreateLaborer[keyof CreateLaborer]): void => {
+    const updateEquipment = (index: number, field: keyof CreateEquipment, value: CreateEquipment[keyof CreateEquipment]): void => {
         onChange(
-            laborers.map((item, i) =>
+            equipment.map((item, i) =>
                 i === index ? { ...item, [field]: value } : item
             )
         )
     }
 
-    const deleteLaborer = (index: number) => {
+    const deleteEquipment = (index: number) => {
         onChange(
-            laborers.filter((item, i) =>
+            equipment.filter((item, i) =>
                 i !== index
             )
         )
     }
 
     const total = (
-        laborers.map(
-            (laborer) => laborer.quantity * laborer.rate
+        equipment.map(
+            (equipment) => equipment.quantity * equipment.rate
         ).reduce((acc, val) => acc + val, 0)
     )
-
     return (
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="">Role</TableHead>
+                    <TableHead className="">Equipment</TableHead>
                     <TableHead>Quantity</TableHead>
                     <TableHead className="">Rate (per day)</TableHead>
                     <TableHead className="text-end">Total</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {laborers.map((laborer, index) => (
+                {equipment.map((equipment, index) => (
                     <ContextMenu key={index}>
                         <ContextMenuTrigger asChild>
                             <TableRow>
                                 <TableCell>
-                                    <Input placeholder="ex. Labor" value={laborer.role}
+                                    <Input placeholder="ex. Backhoe" value={equipment.name}
                                         className="border-0 h-7 shadow-none"
-                                        onChange={e => updateLaborer(index, 'role', e.target.value)} />
+                                        onChange={e => updateEquipment(index, 'name', e.target.value)} />
                                 </TableCell>
                                 <TableCell>
-                                    <Input value={laborer.quantity} type="number"
+                                    <Input value={equipment.quantity} type="number"
                                         className="border-0 h-7 shadow-none"
-                                        onChange={e => updateLaborer(index, 'quantity', parseInt(e.target.value))} />
+                                        onChange={e => updateEquipment(index, 'quantity', parseInt(e.target.value))} />
                                 </TableCell>
                                 <TableCell>
                                     <InputGroup className="h-7 border-none shadow-none">
-                                        <InputGroupInput value={laborer.rate} type="number"
+                                        <InputGroupInput value={equipment.rate} type="number"
                                             className="border-0 h-7 shadow-none"
-                                            onChange={e => updateLaborer(index, 'rate', parseFloat(e.target.value))} />
+                                            onChange={e => updateEquipment(index, 'rate', parseFloat(e.target.value))} />
                                         <InputGroupAddon>
                                             &#8369;
                                         </InputGroupAddon>
@@ -87,7 +87,7 @@ export default function CreateLaborersTable({ laborers, onChange }: {
                                             &#8369;
                                         </span>
                                         <span className="font-mono">
-                                            {(laborer.quantity * laborer.rate).toLocaleString('en-US', {
+                                            {(equipment.quantity * equipment.rate).toLocaleString('en-US', {
                                                 maximumFractionDigits: 2,
                                                 minimumFractionDigits: 2
                                             })}
@@ -97,7 +97,7 @@ export default function CreateLaborersTable({ laborers, onChange }: {
                             </TableRow>
                         </ContextMenuTrigger>
                         <ContextMenuContent>
-                            <ContextMenuItem onClick={() => deleteLaborer(index)}>
+                            <ContextMenuItem onClick={() => deleteEquipment(index)}>
                                 <Trash className="stroke-destructive" />
                                 Delete
                             </ContextMenuItem>
@@ -124,11 +124,11 @@ export default function CreateLaborersTable({ laborers, onChange }: {
                 </TableRow>
             </TableBody>
             <TableFooter>
-                <TableRow onClick={addLabor} className="">
+                <TableRow onClick={addEquipment} className="">
                     <TableCell colSpan={4} className="font-bold">
                         <span className="flex gap-2">
                             <Plus className="h-4 w-4 my-auto" />
-                            Add Labor
+                            Add Equipment
                         </span>
                     </TableCell>
                 </TableRow>

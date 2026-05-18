@@ -38,7 +38,7 @@ export default function CreatePrerequisitesTable({ prerequisites, onChange, item
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead colSpan={2}>Item</TableHead>
+                    <TableHead colSpan={2}>Prerequisites</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -56,8 +56,8 @@ export default function CreatePrerequisitesTable({ prerequisites, onChange, item
                                     <SelectGroup>
                                         <SelectLabel>Items</SelectLabel>
                                         {items?.map((item, index) => (
-                                            <SelectItem key={index} value={item.id.toString()}>
-                                                {item.name ? item.name : `Work Item ${index}`}
+                                            <SelectItem key={item.id} value={item.id.toString()}>
+                                                {item.name ? item.name : `Work Item ${item.id}`}
                                             </SelectItem>
                                         ))}
                                     </SelectGroup>
@@ -74,7 +74,7 @@ export default function CreatePrerequisitesTable({ prerequisites, onChange, item
             </TableBody>
             <TableFooter>
                 <TableRow className="w-full">
-                    <TableCell className="w-full" onClick={() => addItem()}>
+                    <TableCell className="w-full" colSpan={2} onClick={() => addItem()}>
                         <span className="flex gap-2">
                             <Plus className="h-4 w-4 my-auto" />
                             Add Item

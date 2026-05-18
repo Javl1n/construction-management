@@ -11,6 +11,8 @@ import CreateMaterialsTable, { CreateMaterial } from "../materials/create-table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import CreateLaborersTable, { CreateLaborer } from "../laborers/create-table";
 import CreatePrerequisitesTable from "./create-prerequisites-table";
+import CreateEquipmentTable, { CreateEquipment } from "../equipment/create-table";
+import ItemOverviewTable from "./overview-table";
 
 export type CreateWorkItem = {
     id: number,
@@ -20,6 +22,7 @@ export type CreateWorkItem = {
     materials: CreateMaterial[],
     laborers: CreateLaborer[],
     prerequisites: CreateWorkItem['id'][];
+    equipment: CreateEquipment[]
 }
 
 export type CreateWorkItemCardProps = {
@@ -86,7 +89,7 @@ export default function CreateWorkItemCard({ item, items, onChange, onRemove, er
                 <Tabs defaultValue="materials">
                     <TabsList>
                         <TabsTrigger value="materials">Materials</TabsTrigger>
-                        <TabsTrigger value="laborers">Workers</TabsTrigger>
+                        <TabsTrigger value="laborers">Labor</TabsTrigger>
                         <TabsTrigger value="equipment">Equipment</TabsTrigger>
                         <TabsTrigger value="prerequisites">Prerequisites</TabsTrigger>
                         <TabsTrigger value="summary">Overview</TabsTrigger>
@@ -115,6 +118,17 @@ export default function CreateWorkItemCard({ item, items, onChange, onRemove, er
                                 onChange={(prerequisites) => onChange('prerequisites', prerequisites)}
                             />
                         </Field>
+                    </TabsContent>
+                    <TabsContent value="equipment">
+                        <Field>
+                            <CreateEquipmentTable
+                                equipment={item.equipment}
+                                onChange={(equipment) => onChange('equipment', equipment)}
+                            />
+                        </Field>
+                    </TabsContent>
+                    <TabsContent value="summary">
+                        <ItemOverviewTable item={item} />
                     </TabsContent>
                 </Tabs>
             </CardContent>

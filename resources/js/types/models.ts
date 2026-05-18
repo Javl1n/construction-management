@@ -1,25 +1,50 @@
 import { IconName } from "lucide-react/dynamic"
 import { User } from "./auth"
 
+export interface Equipment {
+    // columns
+    id: number
+    name: string
+    quantity: number
+    rate: number
+    created_at: string | null
+    updated_at: string | null
+    // relations
+    item: Item
+    // counts
+    // exists
+    item_exists: boolean
+}
+
 export interface Item {
     // columns
     id: number
     project_id: number
     name: string
-    order: number
-    planned_days: number
-    date_started: string | null
-    date_ended: string | null
+    icon: IconName
+    quantity: number
+    unit: string
+    days: number
+    completed: boolean
     created_at: string | null
     updated_at: string | null
     // relations
     project: Project
     materials: Material[]
+    prerequisites: Item[]
+    dependents: Item[]
+    equiment: Equipment[]
     // counts
     materials_count: number
+    prerequisites_count: number
+    dependents_count: number
+    equiment_count: number
     // exists
     project_exists: boolean
     materials_exists: boolean
+    prerequisites_exists: boolean
+    dependents_exists: boolean
+    equiment_exists: boolean
 }
 
 export interface Material {
@@ -85,16 +110,6 @@ export interface Purchase {
     materials_exists: boolean
 }
 
-export interface SupervisorPayroll {
-    // columns
-    id: number
-    role: string
-    cost: number
-    paid_at: string
-    created_at: string | null
-    updated_at: string | null
-}
-
 // export interface User {
 //     // columns
 //     id: number
@@ -111,7 +126,7 @@ export interface SupervisorPayroll {
 //     two_factor_confirmed_at: string | null
 //     // relations
 //     projects: Project[]
-//     // notifications: DatabaseNotification[]
+//     notifications: DatabaseNotification[]
 //     // counts
 //     projects_count: number
 //     notifications_count: number
@@ -123,7 +138,7 @@ export interface SupervisorPayroll {
 export interface Worker {
     // columns
     id: number
-    project_id: number
+    item_id: number
     role: string
     quantity: number
     rate: number
@@ -131,26 +146,8 @@ export interface Worker {
     updated_at: string | null
     // relations
     project: Project
-    payroll: WorkerPayroll[]
     // counts
-    payroll_count: number
     // exists
     project_exists: boolean
-    payroll_exists: boolean
-}
-
-export interface WorkerPayroll {
-    // columns
-    id: number
-    worker_id: number
-    cost: number
-    paid_at: string
-    created_at: string | null
-    updated_at: string | null
-    // relations
-    worker: Worker
-    // counts
-    // exists
-    worker_exists: boolean
 }
 

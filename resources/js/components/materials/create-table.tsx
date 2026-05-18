@@ -85,7 +85,7 @@ export default function CreateMaterialsTable({ materials, onChange }: {
                     <TableHead className="md:w-30">
                         Price
                     </TableHead>
-                    <TableHead className="text-center">
+                    <TableHead className="text-end">
                         Total
                     </TableHead>
                 </TableRow>

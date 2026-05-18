@@ -36,7 +36,7 @@ export default function CreatePlanPage() {
         planned_days: 50,
         items: [{
             name: "",
-            id: 0,
+            id: 1,
             icon: 'hammer',
             planned_days: 5,
             materials: [
@@ -53,7 +53,14 @@ export default function CreatePlanPage() {
                 rate: 250
             }],
             prerequisites: [
-                0
+                1
+            ],
+            equipment: [
+                {
+                    name: "",
+                    quantity: 1,
+                    rate: 250
+                }
             ]
         }]
     });
@@ -63,19 +70,26 @@ export default function CreatePlanPage() {
     const addItem = () => {
         setData('items', [...data.items, {
             name: '',
-            id: data.items.length > 0 ? data.items.sort((a, b) => b.id - a.id)[0].id + 1 : 0,
+            id: data.items.length > 0 ? data.items.sort((a, b) => b.id - a.id)[0].id + 1 : 1,
             icon: 'hammer',
             planned_days: 5,
-            materials: [
-                {
-                    name: "",
-                    unit: "",
-                    quantity: 5,
-                    price: 20.0
-                }
-            ],
-            laborers: [],
-            prerequisites: []
+            materials: [{
+                name: "",
+                unit: "",
+                quantity: 5,
+                price: 20.0
+            }],
+            laborers: [{
+                role: "",
+                quantity: 1,
+                rate: 250
+            }],
+            prerequisites: [],
+            equipment: [{
+                name: "",
+                quantity: 1,
+                rate: 250
+            }]
         }])
     }
 
@@ -119,7 +133,7 @@ export default function CreatePlanPage() {
                     return (
                         <ScrollNavAsideButton key={`item-card-${index}`} id={`item-card-${index}`}>
                             <DynamicIcon name={item.icon} />
-                            {item.name ? item.name : 'Work Item'}
+                            {item.name ? item.name : 'Work Item ' + item.id}
                         </ScrollNavAsideButton>
                     )
                 })}
