@@ -27,9 +27,9 @@ class ItemController extends Controller
         $materials = Material::all();
 
 
-
         return inertia()->render('plans/create', [
-            'materials' => $materials
+            'materials' => $materials,
+            'engineers' => $engineers
         ]);
     }
 

@@ -24,4 +24,14 @@ class Item extends Model
         return $this->belongsToMany(Material::class)
             ->withPivot('quantity');
     }
+
+    public function prerequisites(): BelongsToMany
+    {
+        return $this->belongsToMany(Item::class, 'prerequisites', 'item_id', 'prerequisite_id');
+    }
+
+    public function dependents(): BelongsToMany
+    {
+        return $this->belongsToMany(Item::class, 'prerequisites', 'prerequisite_id', 'item_id');
+    }
 }
