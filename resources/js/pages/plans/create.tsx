@@ -1,30 +1,41 @@
 import CreateWorkItemCard, { CreateWorkItem } from "@/components/items/create";
-import CreateLaborersCard, { CreateLaborer } from "@/components/laborers/create";
 import { MaterialDatalist } from "@/components/materials/datalist";
+import ProjectEssentialsForm from "@/components/project/essentials-form";
 import { SortableList, SortableListItem, useSortableList } from "@/components/sortable";
 import { ScrollNavAside, ScrollNavAsideButton, ScrollNavContent, ScrollNavItem, ScrollNavLayout } from "@/layouts/scroll-nav-layout";
 import items from "@/routes/items";
-import { Project } from "@/types";
+import { Auth, Project, User } from "@/types";
 import { useForm, usePage } from "@inertiajs/react";
 import { Plus, Users } from "lucide-react";
-import { DynamicIcon } from "lucide-react/dynamic";
+import { DynamicIcon, IconName } from "lucide-react/dynamic";
+import { createContext, useContext } from "react";
 
 export type CreatePlanProp = {
-    laborers: CreateLaborer[]
-    items: CreateWorkItem[]
+    name: Project['name'];
+    icon: Project['icon'];
+    engineer: User['id'];
+    planned_days: number;
+    items: CreateWorkItem[];
+}
+
+const PlanFormContext = createContext<CreatePlanProp | null>(null);
+
+export function usePlanContext(): CreatePlanProp {
+    const ctx = useContext(PlanFormContext);
+    if (!ctx) throw new Error('usePlanContext must be used inside PlanProvider')
+    return ctx
 }
 
 export default function CreatePlanPage() {
-    const { project } = usePage<{ project: Project }>().props;
+    const { project, engineers, auth: { user } } = usePage<{ project: Project, engineers: User[], auth: Auth }>().props;
 
     const form = useForm<CreatePlanProp>({
-        laborers: [{
-            role: "",
-            quantity: 1,
-            rate: 250
-        }],
+        name: project.name,
+        icon: project.icon,
+        engineer: user.role == 'encoder' ? engineers[0].id : user.id,
+        planned_days: 50,
         items: [{
-            name: "Cementing",
+            name: "",
             id: 0,
             icon: 'hammer',
             planned_days: 5,
@@ -35,13 +46,19 @@ export default function CreatePlanPage() {
                     quantity: 5,
                     price: 50.0
                 }
+            ],
+            laborers: [{
+                role: "",
+                quantity: 1,
+                rate: 250
+            }],
+            prerequisites: [
+                0
             ]
         }]
     });
 
     const { data, setData, errors, post } = form;
-
-    const [items, setItems] = useSortableList(data.items);
 
     const addItem = () => {
         setData('items', [...data.items, {
@@ -49,7 +66,16 @@ export default function CreatePlanPage() {
             id: data.items.length > 0 ? data.items.sort((a, b) => b.id - a.id)[0].id + 1 : 0,
             icon: 'hammer',
             planned_days: 5,
-            materials: []
+            materials: [
+                {
+                    name: "",
+                    unit: "",
+                    quantity: 5,
+                    price: 20.0
+                }
+            ],
+            laborers: [],
+            prerequisites: []
         }])
     }
 
@@ -81,19 +107,19 @@ export default function CreatePlanPage() {
     return (
         <ScrollNavLayout heading={{
             title: "Project Plan",
-            description: `Create plan for ${project.name}`,
+            description: `Create plan for ${data.name}`,
         }}>
             <ScrollNavAside>
-                <ScrollNavAsideButton id="labor">
-                    <Users />
-                    Labor
+                <ScrollNavAsideButton id="information">
+                    <DynamicIcon name={data.icon} />
+                    Information
                 </ScrollNavAsideButton>
-                {items.map((item, index) => {
+                {data.items.map((item, index) => {
                     {/* const item = data.items.filter(item => item.id == localItem.id)[0] */ }
                     return (
                         <ScrollNavAsideButton key={`item-card-${index}`} id={`item-card-${index}`}>
                             <DynamicIcon name={item.icon} />
-                            {item.name ? item.name : 'New Work Item'}
+                            {item.name ? item.name : 'Work Item'}
                         </ScrollNavAsideButton>
                     )
                 })}
@@ -108,24 +134,20 @@ export default function CreatePlanPage() {
                 <div className="font-bold">
                     Essentials
                 </div>
-                <ScrollNavItem id="labor">
-                    <CreateLaborersCard form={form} />
+                <ScrollNavItem id="information">
+                    <ProjectEssentialsForm form={form} />
                 </ScrollNavItem>
                 <div className="font-bold">
                     Item of Works
                 </div>
-                <SortableList items={items} onMove={setItems}>
-                    {data.items.map((item, index) => (
-                        <SortableListItem id={item.id} index={index} key={`item-card-${index}`}>
-                            <ScrollNavItem id={`item-card-${index}`}>
-                                <CreateWorkItemCard item={item} errors={getItemErrors(index)}
-                                    onChange={(field, value) => updateItem(item.id, field, value)}
-                                    onRemove={() => removeItem(item.id)}
-                                />
-                            </ScrollNavItem>
-                        </SortableListItem>
-                    ))}
-                </SortableList>
+                {data.items.map((item, index) => (
+                    <ScrollNavItem id={`item-card-${index}`} key={index}>
+                        <CreateWorkItemCard item={item} items={data.items} errors={getItemErrors(index)}
+                            onChange={(field, value) => updateItem(item.id, field, value)}
+                            onRemove={() => removeItem(item.id)}
+                        />
+                    </ScrollNavItem>
+                ))}
                 <MaterialDatalist />
             </ScrollNavContent>
         </ScrollNavLayout >

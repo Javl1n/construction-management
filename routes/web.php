@@ -25,7 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::name('items.')->prefix('items')->controller(ItemController::class)
         ->group(function () {
-            Route::get('create', 'create')->name('create');
+            Route::get('create', 'create')->name('create')->middleware('project');
         });
 });
 

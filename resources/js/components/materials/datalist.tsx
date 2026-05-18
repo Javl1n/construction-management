@@ -6,7 +6,7 @@ export function MaterialDatalist() {
     return (
         <datalist id="materials">
             {materials?.map((material, index) => (
-                <option value={material.name} />
+                <option value={material.name} key={index} />
             ))}
         </datalist>
     )
