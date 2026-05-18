@@ -14,14 +14,4 @@ class Worker extends Model
 {
     /** @use HasFactory<\Database\Factories\WorkerFactory> */
     use HasFactory;
-
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class);
-    }
-
-    public function payroll(): HasMany
-    {
-        return $this->hasMany(WorkerPayroll::class, 'worker_id');
-    }
 }

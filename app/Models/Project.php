@@ -28,9 +28,4 @@ class Project extends Model
     {
         return $this->hasMany(Purchase::class);
     }
-
-    public function workers(): HasMany
-    {
-        return $this->hasMany(Worker::class);
-    }
 }
