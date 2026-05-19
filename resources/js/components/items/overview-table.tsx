@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
 import { CreateWorkItem } from "./create";
 
-export default function ItemOverviewTable({ item: { materials, laborers, equipment } }: { item: CreateWorkItem }) {
+export default function ItemOverviewTable({ item: { materials, laborers, equipment, ...item } }: { item: CreateWorkItem }) {
     const materialCost = (
         materials.map(
             (material) => material.quantity * material.price
@@ -12,12 +12,14 @@ export default function ItemOverviewTable({ item: { materials, laborers, equipme
         laborers.map(
             (laborer) => laborer.quantity * laborer.rate
         ).reduce((acc, val) => acc + val, 0)
+        * item.planned_days
     )
 
     const equipmentCost = (
         equipment.map(
             (equipment) => equipment.quantity * equipment.rate
         ).reduce((acc, val) => acc + val, 0)
+        * item.planned_days
     )
 
     const total = materialCost + laborCost + equipmentCost;

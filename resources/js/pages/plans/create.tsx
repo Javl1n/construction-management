@@ -5,11 +5,13 @@ import ProjectEssentialsForm from "@/components/project/essentials-form";
 import { SortableList, SortableListItem, useSortableList } from "@/components/sortable";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollNavAside, ScrollNavAsideButton, ScrollNavAsideHeader, ScrollNavContent, ScrollNavItem, ScrollNavLayout } from "@/layouts/scroll-nav-layout";
+import drafts from "@/routes/drafts";
 import items from "@/routes/items";
 import { Auth, Project, User } from "@/types";
 import { useForm, usePage } from "@inertiajs/react";
-import { ChartGanttIcon, FormInputIcon, LucideWalletCards, Plus, TableIcon, Users, WorkflowIcon } from "lucide-react";
+import { ChartGanttIcon, FileClock, FormInputIcon, LucideWalletCards, Plus, TableIcon, Users, WorkflowIcon } from "lucide-react";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
+import { parse } from "path";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export type CreatePlanProp = {
@@ -29,11 +31,11 @@ export function usePlanContext(): CreatePlanProp {
 }
 
 export default function CreatePlanPage() {
-    const { project, engineers, auth: { user } } = usePage<{ project: Project, engineers: User[], auth: Auth }>().props;
+    const { draft, project, engineers, auth: { user } } = usePage<{ project: Project, engineers: User[], auth: Auth, draft: CreatePlanProp }>().props;
 
     const [mode, setMode] = useState<'card' | 'path' | string>('card')
 
-    const form = useForm<CreatePlanProp>({
+    const defaultProjectProp: CreatePlanProp = {
         name: project.name,
         icon: project.icon,
         engineer: user.role == 'encoder' ? engineers[0].id : user.id,
@@ -65,9 +67,18 @@ export default function CreatePlanPage() {
                 }
             ]
         }]
-    });
+    }
+
+    const form = useForm<CreatePlanProp>(draft ?? defaultProjectProp);
 
     const { data, setData, errors, post } = form;
+
+    const saveDraft = () => {
+        post(drafts.store().url, {
+            onBefore: () => console.log("initialized"),
+            onSuccess: () => console.log('saved to drafts')
+        });
+    }
 
     const addItem = () => {
         setData('items', [...data.items, {
@@ -107,7 +118,10 @@ export default function CreatePlanPage() {
         setData('items',
             data.items.filter((item, i) =>
                 id !== item.id
-            )
+            ).map((item) => ({
+                ...item,
+                prerequisites: item.prerequisites.filter((p) => p !== id)
+            }))
         );
     }
 
@@ -127,12 +141,13 @@ export default function CreatePlanPage() {
             if (finishMap.has(id)) return finishMap.get(id)!;
 
             const item = data.items.find(i => i.id === id)!;
+            if (!item) return 0;
 
             const prereqMax = item.prerequisites.length > 0
-                ? Math.max(...item.prerequisites.map(getFinish))
+                ? Math.max(...item.prerequisites.map(p => getFinish(Number(p))))
                 : 0;
 
-            const finish = prereqMax + item.planned_days;
+            const finish = prereqMax + Number(item.planned_days);
             finishMap.set(id, finish);
             return finish;
         }
@@ -167,7 +182,7 @@ export default function CreatePlanPage() {
                     )
                 })}
                 <ScrollNavAsideHeader>
-                    Actions
+                    View
                 </ScrollNavAsideHeader>
                 <Select value={mode} onValueChange={setMode}>
                     <SelectTrigger className="w-full border-none shadow-none hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50">
@@ -176,19 +191,27 @@ export default function CreatePlanPage() {
                     <SelectContent>
                         <SelectItem value="card">
                             <TableIcon />
-                            Card Mode
+                            Form
                         </SelectItem>
                         <SelectItem value="path">
                             <WorkflowIcon />
-                            Path Mode
+                            Precedence Diagram
                         </SelectItem>
                     </SelectContent>
                 </Select>
-
+                <ScrollNavAsideHeader>
+                    Actions
+                </ScrollNavAsideHeader>
                 <div onClick={addItem}>
                     <ScrollNavAsideButton>
                         <Plus />
                         Add Item
+                    </ScrollNavAsideButton>
+                </div>
+                <div onClick={saveDraft}>
+                    <ScrollNavAsideButton>
+                        <FileClock />
+                        Save as Draft
                     </ScrollNavAsideButton>
                 </div>
             </ScrollNavAside>

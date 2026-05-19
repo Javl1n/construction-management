@@ -56,7 +56,7 @@ export default function CreatePrerequisitesTable({ id, prerequisites, onChange, 
                                 <SelectContent>
                                     <SelectGroup>
                                         <SelectLabel>Items</SelectLabel>
-                                        {items.filter((i) => i.id !== id).map((item, index) => (
+                                        {items.filter((i) => i.id !== id || prerequisites.includes(i.id)).map((item, index) => (
                                             <SelectItem key={item.id} value={item.id.toString()}>
                                                 {item.name ? item.name : `Work Item ${item.id}`}
                                             </SelectItem>

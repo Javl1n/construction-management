@@ -33,12 +33,14 @@ export default function ProjectEssentialsForm({ form: { data, setData } }: { for
             item.laborers.map(
                 (laborer) => laborer.quantity * laborer.rate
             ).reduce((acc, val) => acc + val, 0)
+            * item.planned_days
         )
 
         const equipmentCost = (
             item.equipment.map(
                 (equipment) => equipment.quantity * equipment.rate
             ).reduce((acc, val) => acc + val, 0)
+            * item.planned_days
         )
 
         return materialCost + laborCost + equipmentCost;
