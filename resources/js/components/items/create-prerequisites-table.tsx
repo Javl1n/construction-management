@@ -39,7 +39,7 @@ export default function CreatePrerequisitesTable({ id, prerequisites, onChange, 
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead colSpan={2}>Prerequisites</TableHead>
+                    <TableHead colSpan={2}>Preceding Items</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>

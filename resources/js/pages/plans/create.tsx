@@ -33,7 +33,7 @@ export function usePlanContext(): CreatePlanProp {
 export default function CreatePlanPage() {
     const { draft, project, engineers, auth: { user } } = usePage<{ project: Project, engineers: User[], auth: Auth, draft: CreatePlanProp }>().props;
 
-    const [mode, setMode] = useState<'card' | 'path' | string>('card')
+    const [mode, setMode] = useState<'card' | 'path' | string>('form')
 
     const defaultProjectProp: CreatePlanProp = {
         name: project.name,
@@ -45,6 +45,8 @@ export default function CreatePlanPage() {
             id: 1,
             icon: 'hammer',
             planned_days: 5,
+            quantity: 0,
+            unit: "",
             materials: [
                 {
                     name: "",
@@ -86,6 +88,8 @@ export default function CreatePlanPage() {
             id: data.items.length > 0 ? data.items.sort((a, b) => b.id - a.id)[0].id + 1 : 1,
             icon: 'hammer',
             planned_days: 5,
+            quantity: 0,
+            unit: "",
             materials: [{
                 name: "",
                 unit: "",
@@ -181,24 +185,23 @@ export default function CreatePlanPage() {
                         </ScrollNavAsideButton>
                     )
                 })}
+
                 <ScrollNavAsideHeader>
                     View
                 </ScrollNavAsideHeader>
-                <Select value={mode} onValueChange={setMode}>
-                    <SelectTrigger className="w-full border-none shadow-none hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50">
-                        <SelectValue placeholder="Select Mode" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="card">
-                            <TableIcon />
-                            Form
-                        </SelectItem>
-                        <SelectItem value="path">
-                            <WorkflowIcon />
-                            Precedence Diagram
-                        </SelectItem>
-                    </SelectContent>
-                </Select>
+                <div onClick={() => setMode('form')}>
+                    <ScrollNavAsideButton isActive={mode === 'form'}>
+                        <TableIcon />
+                        Form
+                    </ScrollNavAsideButton>
+                </div>
+                <div onClick={() => setMode('path')}>
+                    <ScrollNavAsideButton isActive={mode === 'path'}>
+                        <WorkflowIcon />
+                        Precedence Diagram
+                    </ScrollNavAsideButton>
+                </div>
+
                 <ScrollNavAsideHeader>
                     Actions
                 </ScrollNavAsideHeader>
@@ -215,7 +218,7 @@ export default function CreatePlanPage() {
                     </ScrollNavAsideButton>
                 </div>
             </ScrollNavAside>
-            {mode == 'card' &&
+            {mode == 'form' &&
                 <ScrollNavContent>
                     <div className="font-bold">
                         Essentials

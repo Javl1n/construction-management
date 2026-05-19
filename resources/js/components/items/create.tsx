@@ -18,6 +18,8 @@ export type CreateWorkItem = {
     id: number,
     name: string,
     icon: IconName,
+    quantity: number,
+    unit: string,
     planned_days: number,
     materials: CreateMaterial[],
     laborers: CreateLaborer[],
@@ -85,13 +87,33 @@ export default function CreateWorkItemCard({ item, items, onChange, onRemove, er
                             {errors.planned_days}
                         </FieldError>
                     </Field>
+                    <Field className="col-span-1 gap-1">
+                        <FieldLabel>
+                            Quantity <span className="text-muted-foreground">(Area of Completion)</span>
+                        </FieldLabel>
+                        <Input type="number" value={item.quantity} placeholder="Enter number"
+                            onChange={e => onChange('quantity', e.target.valueAsNumber)} />
+                        <FieldError>
+                            {errors.name}
+                        </FieldError>
+                    </Field>
+                    <Field className="col-span-2 gap-1">
+                        <FieldLabel>
+                            Unit
+                        </FieldLabel>
+                        <Input value={item.unit} placeholder="ex. Square Meter, Cubic Meter..."
+                            onChange={e => onChange('unit', e.target.value)} />
+                        <FieldError>
+                            {errors.name}
+                        </FieldError>
+                    </Field>
                 </Field>
                 <Tabs defaultValue="materials">
                     <TabsList>
                         <TabsTrigger value="materials">Materials</TabsTrigger>
                         <TabsTrigger value="laborers">Labor</TabsTrigger>
                         <TabsTrigger value="equipment">Equipment</TabsTrigger>
-                        <TabsTrigger value="prerequisites">Prerequisites</TabsTrigger>
+                        <TabsTrigger value="prerequisites">Precedings</TabsTrigger>
                         <TabsTrigger value="summary">Overview</TabsTrigger>
                     </TabsList>
                     <TabsContent value="materials">

@@ -70,15 +70,23 @@ export function ScrollNavLayout({ children, heading: { title, description } }: P
 }
 
 export function ScrollNavAside({ children }: PropsWithChildren) {
+    const { open } = useSidebar();
     return (
         <>
-            <aside className="w-full max-w-xl lg:w-48">
-                <nav
-                    className="flex flex-col space-y-1 space-x-0"
-                >
-                    {children}
-                </nav>
-            </aside>
+            <ScrollArea className={cn([
+                {
+                    "md:max-h-[calc(100vh-9.6rem)]": !open,
+                    "md:max-h-[calc(100vh-10.6rem)]": open,
+                }
+            ])}>
+                <aside className="w-full max-w-xl lg:w-48 me-4 pb-20">
+                    <nav
+                        className="flex flex-col space-y-1 space-x-0"
+                    >
+                        {children}
+                    </nav>
+                </aside>
+            </ScrollArea>
             <Separator className="my-6 lg:hidden" />
         </>
     )
@@ -92,8 +100,9 @@ export function ScrollNavAsideHeader({ children }: PropsWithChildren) {
     )
 }
 
-export function ScrollNavAsideButton({ children, id }: PropsWithChildren<{
-    id?: string
+export function ScrollNavAsideButton({ children, id, isActive }: PropsWithChildren<{
+    id?: string,
+    isActive?: boolean
 }>) {
     const { scrollTo, active } = useScrollNav();
 
@@ -104,7 +113,7 @@ export function ScrollNavAsideButton({ children, id }: PropsWithChildren<{
             onClick={() => id && scrollTo(id)}
             asChild
             className={cn('w-full justify-start', {
-                'bg-muted': id === active
+                'bg-muted': id === active || isActive
             })}
         >
             <div>
