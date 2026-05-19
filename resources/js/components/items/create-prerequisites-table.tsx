@@ -5,10 +5,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Button } from "../ui/button";
 import { Plus, Trash } from "lucide-react";
 
-export default function CreatePrerequisitesTable({ prerequisites, onChange, items }: {
+export default function CreatePrerequisitesTable({ id, prerequisites, onChange, items }: {
     prerequisites: CreateWorkItem['prerequisites']
     items: CreateWorkItem[]
     onChange: (prerequisites: CreateWorkItem['prerequisites']) => void
+    id: CreateWorkItem['id']
 }) {
 
     const addItem = () => {
@@ -55,7 +56,7 @@ export default function CreatePrerequisitesTable({ prerequisites, onChange, item
                                 <SelectContent>
                                     <SelectGroup>
                                         <SelectLabel>Items</SelectLabel>
-                                        {items?.map((item, index) => (
+                                        {items.filter((i) => i.id !== id).map((item, index) => (
                                             <SelectItem key={item.id} value={item.id.toString()}>
                                                 {item.name ? item.name : `Work Item ${item.id}`}
                                             </SelectItem>

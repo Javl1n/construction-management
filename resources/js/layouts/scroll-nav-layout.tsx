@@ -84,6 +84,14 @@ export function ScrollNavAside({ children }: PropsWithChildren) {
     )
 }
 
+export function ScrollNavAsideHeader({ children }: PropsWithChildren) {
+    return (
+        <div className="text-muted-foreground text-xs">
+            {children}
+        </div>
+    )
+}
+
 export function ScrollNavAsideButton({ children, id }: PropsWithChildren<{
     id?: string
 }>) {

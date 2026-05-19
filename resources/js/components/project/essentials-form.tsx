@@ -82,7 +82,7 @@ export default function ProjectEssentialsForm({ form: { data, setData } }: { for
                         </FieldLabel>
                         <InputGroup>
                             <InputGroupInput
-                                type="number" value={data.planned_days}
+                                type="number" value={data.planned_days} readOnly
                                 onChange={(e) => setData('planned_days', parseInt(e.target.value))}
                             />
                             <InputGroupAddon align={'inline-end'}>
@@ -104,7 +104,7 @@ export default function ProjectEssentialsForm({ form: { data, setData } }: { for
                                 Item
                             </TableHead>
                             <TableHead className="text-center">
-                                Days
+                                Duration
                             </TableHead>
                             <TableHead className="text-end">
                                 Cost
@@ -118,7 +118,7 @@ export default function ProjectEssentialsForm({ form: { data, setData } }: { for
                                     {item.name ? item.name : `Work Item ${item.id}`}
                                 </TableCell>
                                 <TableCell className="text-center">
-                                    {item.planned_days}
+                                    {item.planned_days}d
                                 </TableCell>
                                 <TableCell className="text-end">
                                     <div className="flex gap-2 justify-between">
@@ -138,8 +138,11 @@ export default function ProjectEssentialsForm({ form: { data, setData } }: { for
                     </TableBody>
                     <TableFooter>
                         <TableRow>
-                            <TableCell colSpan={2}>
+                            <TableCell colSpan={1}>
                                 Total
+                            </TableCell>
+                            <TableCell className="text-center">
+                                {data.planned_days}d
                             </TableCell>
                             <TableCell>
                                 <div className="flex gap-2 justify-between font-bold">

@@ -31,6 +31,7 @@
     "dependencies": {
         "@babel/runtime": "^7.29.2",
         "@base-ui/react": "^1.4.1",
+        "@dagrejs/dagre": "^3.0.0",
         "@dnd-kit/helpers": "^0.4.0",
         "@dnd-kit/react": "^0.4.0",
         "@headlessui/react": "^2.2.0",
@@ -54,6 +55,7 @@
         "@types/react": "^19.2.0",
         "@types/react-dom": "^19.2.0",
         "@vitejs/plugin-react": "^5.2.0",
+        "@xyflow/react": "^12.10.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "concurrently": "^9.0.1",

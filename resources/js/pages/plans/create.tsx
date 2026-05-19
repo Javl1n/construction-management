@@ -1,14 +1,16 @@
 import CreateWorkItemCard, { CreateWorkItem } from "@/components/items/create";
 import { MaterialDatalist } from "@/components/materials/datalist";
+import { PlanPath } from "@/components/plans/path";
 import ProjectEssentialsForm from "@/components/project/essentials-form";
 import { SortableList, SortableListItem, useSortableList } from "@/components/sortable";
-import { ScrollNavAside, ScrollNavAsideButton, ScrollNavContent, ScrollNavItem, ScrollNavLayout } from "@/layouts/scroll-nav-layout";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollNavAside, ScrollNavAsideButton, ScrollNavAsideHeader, ScrollNavContent, ScrollNavItem, ScrollNavLayout } from "@/layouts/scroll-nav-layout";
 import items from "@/routes/items";
 import { Auth, Project, User } from "@/types";
 import { useForm, usePage } from "@inertiajs/react";
-import { Plus, Users } from "lucide-react";
+import { ChartGanttIcon, FormInputIcon, LucideWalletCards, Plus, TableIcon, Users, WorkflowIcon } from "lucide-react";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export type CreatePlanProp = {
     name: Project['name'];
@@ -28,6 +30,8 @@ export function usePlanContext(): CreatePlanProp {
 
 export default function CreatePlanPage() {
     const { project, engineers, auth: { user } } = usePage<{ project: Project, engineers: User[], auth: Auth }>().props;
+
+    const [mode, setMode] = useState<'card' | 'path' | string>('card')
 
     const form = useForm<CreatePlanProp>({
         name: project.name,
@@ -52,9 +56,7 @@ export default function CreatePlanPage() {
                 quantity: 1,
                 rate: 250
             }],
-            prerequisites: [
-                1
-            ],
+            prerequisites: [],
             equipment: [
                 {
                     name: "",
@@ -118,12 +120,39 @@ export default function CreatePlanPage() {
         ) as Partial<Record<keyof CreateWorkItem, string>>
     }
 
+    const total_days = useMemo(() => {
+        const finishMap = new Map<number, number>();
+
+        function getFinish(id: number): number {
+            if (finishMap.has(id)) return finishMap.get(id)!;
+
+            const item = data.items.find(i => i.id === id)!;
+
+            const prereqMax = item.prerequisites.length > 0
+                ? Math.max(...item.prerequisites.map(getFinish))
+                : 0;
+
+            const finish = prereqMax + item.planned_days;
+            finishMap.set(id, finish);
+            return finish;
+        }
+
+        return Math.max(...data.items.map(item => getFinish(item.id)));
+    }, [data.items]);
+
+    useEffect(() => {
+        setData('planned_days', total_days);
+    }, [total_days]);
+
     return (
         <ScrollNavLayout heading={{
             title: "Project Plan",
             description: `Create plan for ${data.name}`,
         }}>
             <ScrollNavAside>
+                <ScrollNavAsideHeader>
+                    Navigation
+                </ScrollNavAsideHeader>
                 <ScrollNavAsideButton id="information">
                     <DynamicIcon name={data.icon} />
                     Information
@@ -137,6 +166,25 @@ export default function CreatePlanPage() {
                         </ScrollNavAsideButton>
                     )
                 })}
+                <ScrollNavAsideHeader>
+                    Actions
+                </ScrollNavAsideHeader>
+                <Select value={mode} onValueChange={setMode}>
+                    <SelectTrigger className="w-full border-none shadow-none hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50">
+                        <SelectValue placeholder="Select Mode" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="card">
+                            <TableIcon />
+                            Card Mode
+                        </SelectItem>
+                        <SelectItem value="path">
+                            <WorkflowIcon />
+                            Path Mode
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
+
                 <div onClick={addItem}>
                     <ScrollNavAsideButton>
                         <Plus />
@@ -144,26 +192,31 @@ export default function CreatePlanPage() {
                     </ScrollNavAsideButton>
                 </div>
             </ScrollNavAside>
-            <ScrollNavContent>
-                <div className="font-bold">
-                    Essentials
-                </div>
-                <ScrollNavItem id="information">
-                    <ProjectEssentialsForm form={form} />
-                </ScrollNavItem>
-                <div className="font-bold">
-                    Item of Works
-                </div>
-                {data.items.map((item, index) => (
-                    <ScrollNavItem id={`item-card-${index}`} key={index}>
-                        <CreateWorkItemCard item={item} items={data.items} errors={getItemErrors(index)}
-                            onChange={(field, value) => updateItem(item.id, field, value)}
-                            onRemove={() => removeItem(item.id)}
-                        />
+            {mode == 'card' &&
+                <ScrollNavContent>
+                    <div className="font-bold">
+                        Essentials
+                    </div>
+                    <ScrollNavItem id="information">
+                        <ProjectEssentialsForm form={form} />
                     </ScrollNavItem>
-                ))}
-                <MaterialDatalist />
-            </ScrollNavContent>
+                    <div className="font-bold">
+                        Item of Works
+                    </div>
+                    {data.items.map((item, index) => (
+                        <ScrollNavItem id={`item-card-${index}`} key={index}>
+                            <CreateWorkItemCard item={item} items={data.items} errors={getItemErrors(index)}
+                                onChange={(field, value) => updateItem(item.id, field, value)}
+                                onRemove={() => removeItem(item.id)}
+                            />
+                        </ScrollNavItem>
+                    ))}
+                    <MaterialDatalist />
+                </ScrollNavContent>
+            }
+            {mode === 'path' && <>
+                <PlanPath items={data.items} />
+            </>}
         </ScrollNavLayout >
     )
 }

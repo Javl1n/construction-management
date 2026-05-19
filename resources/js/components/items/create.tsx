@@ -113,6 +113,7 @@ export default function CreateWorkItemCard({ item, items, onChange, onRemove, er
                     <TabsContent value="prerequisites" className="">
                         <Field>
                             <CreatePrerequisitesTable
+                                id={item.id}
                                 prerequisites={item.prerequisites}
                                 items={items}
                                 onChange={(prerequisites) => onChange('prerequisites', prerequisites)}
