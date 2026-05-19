@@ -6,6 +6,7 @@ use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Models\Item;
 use App\Models\Material;
+use App\Models\Project;
 use App\Models\User;
 
 class ItemController extends Controller
@@ -25,9 +26,10 @@ class ItemController extends Controller
     {
         $engineers = User::whereNot('role', 'encoder')->get();
         $materials = Material::all();
-
+        $project = Project::with(['draft'])->find(session('current_project_id'));
 
         return inertia()->render('plans/create', [
+            'draft' => $project->draft?->data,
             'materials' => $materials,
             'engineers' => $engineers
         ]);

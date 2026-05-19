@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DraftController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\WorkerController;
@@ -16,12 +17,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::inertia('empty-project', 'empty-project')->name('empty-project');
 
+    Route::post('/draft', [DraftController::class, 'store'])->name('drafts.store');
     Route::name('projects.')->prefix('project')->controller(ProjectController::class)
         ->group(function () {
             // Route::get('/', 'show')->name('show');
             Route::post('/switch', 'switch')->name('switch');
             Route::post('/', 'store')->name('store');
         });
+
 
     Route::name('items.')->prefix('items')->controller(ItemController::class)
         ->group(function () {
