@@ -44,7 +44,7 @@ function ItemNode({ data }: NodeProps<Node<{
 }, 'item'>>) {
     return (
         <div className="border bg-card rounded overflow-hidden w-40 text-sm">
-            <Handle type="target" position={Position.Top} />
+            <Handle type="target" position={Position.Left} />
             <div className="bg-accent p-1 font-bold">
                 {data.label}
             </div>
@@ -62,7 +62,7 @@ function ItemNode({ data }: NodeProps<Node<{
                     {data.workers}
                 </div>
             </div>
-            <Handle type="source" position={Position.Bottom} />
+            <Handle type="source" position={Position.Right} />
         </div>
     )
 }

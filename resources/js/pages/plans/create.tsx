@@ -1,5 +1,6 @@
 import CreateWorkItemCard, { CreateWorkItem } from "@/components/items/create";
 import { MaterialDatalist } from "@/components/materials/datalist";
+import { GanttChartPlanCard } from "@/components/plans/gantt";
 import { PlanPath } from "@/components/plans/path";
 import ProjectEssentialsForm from "@/components/project/essentials-form";
 import { SortableList, SortableListItem, useSortableList } from "@/components/sortable";
@@ -13,6 +14,7 @@ import { ChartGanttIcon, FileClock, FormInputIcon, LucideWalletCards, Plus, Tabl
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
 import { parse } from "path";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 export type CreatePlanProp = {
     name: Project['name'];
@@ -77,8 +79,9 @@ export default function CreatePlanPage() {
 
     const saveDraft = () => {
         post(drafts.store().url, {
-            onBefore: () => console.log("initialized"),
-            onSuccess: () => console.log('saved to drafts')
+            onSuccess: () => {
+                toast.success("Saved to draft")
+            }
         });
     }
 
@@ -176,6 +179,10 @@ export default function CreatePlanPage() {
                     <DynamicIcon name={data.icon} />
                     Information
                 </ScrollNavAsideButton>
+                <ScrollNavAsideButton id="gantt">
+                    <DynamicIcon name={'gantt-chart'} />
+                    Gantt Chart
+                </ScrollNavAsideButton>
                 {data.items.map((item, index) => {
                     {/* const item = data.items.filter(item => item.id == localItem.id)[0] */ }
                     return (
@@ -225,6 +232,9 @@ export default function CreatePlanPage() {
                     </div>
                     <ScrollNavItem id="information">
                         <ProjectEssentialsForm form={form} />
+                    </ScrollNavItem>
+                    <ScrollNavItem id="gantt">
+                        <GanttChartPlanCard items={data.items} />
                     </ScrollNavItem>
                     <div className="font-bold">
                         Item of Works

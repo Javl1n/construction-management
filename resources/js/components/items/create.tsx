@@ -78,7 +78,7 @@ export default function CreateWorkItemCard({ item, items, onChange, onRemove, er
                         </FieldLabel>
                         <InputGroup>
                             <InputGroupInput name="planned_days" type="number" value={item.planned_days} placeholder="6"
-                                onChange={e => onChange('planned_days', e.target.value)} />
+                                onChange={e => onChange('planned_days', e.target.valueAsNumber)} />
                             <InputGroupAddon align={'inline-end'}>
                                 <InputGroupText>days</InputGroupText>
                             </InputGroupAddon>

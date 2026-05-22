@@ -8,7 +8,7 @@ export function getLayoutedElements(nodes: Node[], edges: Edge[]) {
     const g = new dagre.graphlib.Graph();
 
     g.setGraph({
-        rankdir: 'TB',
+        rankdir: 'LR',
         ranksep: 80,
         nodesep: 40,
     });
