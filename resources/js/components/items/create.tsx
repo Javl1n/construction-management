@@ -13,6 +13,7 @@ import CreateLaborersTable, { CreateLaborer } from "../laborers/create-table";
 import CreatePrerequisitesTable from "./create-prerequisites-table";
 import CreateEquipmentTable, { CreateEquipment } from "../equipment/create-table";
 import ItemOverviewTable from "./overview-table";
+import { useScrollNav } from "@/layouts/scroll-nav-layout";
 
 export type CreateWorkItem = {
     id: number,
@@ -36,6 +37,7 @@ export type CreateWorkItemCardProps = {
 }
 
 export default function CreateWorkItemCard({ item, items, onChange, onRemove, errors }: CreateWorkItemCardProps) {
+    const { scrollTo } = useScrollNav();
     return (
         <Card className="gap-4">
             <CardHeader>
@@ -138,7 +140,10 @@ export default function CreateWorkItemCard({ item, items, onChange, onRemove, er
                                 id={item.id}
                                 prerequisites={item.prerequisites}
                                 items={items}
-                                onChange={(prerequisites) => onChange('prerequisites', prerequisites)}
+                                onChange={(prerequisites) => {
+                                    onChange('prerequisites', prerequisites);
+                                    setTimeout(() => scrollTo(`item-card-${item.id}`, 'instant'), 0);
+                                }}
                             />
                         </Field>
                     </TabsContent>

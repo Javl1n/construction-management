@@ -3,14 +3,13 @@ import { MaterialDatalist } from "@/components/materials/datalist";
 import { GanttChartPlanCard } from "@/components/plans/gantt";
 import { PlanPath } from "@/components/plans/path";
 import ProjectEssentialsForm from "@/components/project/essentials-form";
-import { SortableList, SortableListItem, useSortableList } from "@/components/sortable";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ScrollNavAside, ScrollNavAsideButton, ScrollNavAsideHeader, ScrollNavContent, ScrollNavItem, ScrollNavLayout } from "@/layouts/scroll-nav-layout";
+import { usePrerequisiteOrder } from "@/hooks/use-prerequisite-order";
+import { ScrollNavAside, ScrollNavAsideButton, ScrollNavAsideHeader, ScrollNavContent, ScrollNavItem, ScrollNavLayout, useScrollNav } from "@/layouts/scroll-nav-layout";
 import drafts from "@/routes/drafts";
 import items from "@/routes/items";
 import { Auth, Project, User } from "@/types";
-import { useForm, usePage } from "@inertiajs/react";
-import { ChartGanttIcon, FileClock, FormInputIcon, LucideWalletCards, Plus, TableIcon, Users, WorkflowIcon } from "lucide-react";
+import { InertiaForm, useForm, usePage } from "@inertiajs/react";
+import { ChartGanttIcon, FileClock, FormInputIcon, LucideWalletCards, Plus, Save, TableIcon, Users, WorkflowIcon } from "lucide-react";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
 import { parse } from "path";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -24,19 +23,8 @@ export type CreatePlanProp = {
     items: CreateWorkItem[];
 }
 
-const PlanFormContext = createContext<CreatePlanProp | null>(null);
-
-export function usePlanContext(): CreatePlanProp {
-    const ctx = useContext(PlanFormContext);
-    if (!ctx) throw new Error('usePlanContext must be used inside PlanProvider')
-    return ctx
-}
-
 export default function CreatePlanPage() {
     const { draft, project, engineers, auth: { user } } = usePage<{ project: Project, engineers: User[], auth: Auth, draft: CreatePlanProp }>().props;
-
-    const [mode, setMode] = useState<'card' | 'path' | string>('form')
-
     const defaultProjectProp: CreatePlanProp = {
         name: project.name,
         icon: project.icon,
@@ -75,6 +63,20 @@ export default function CreatePlanPage() {
 
     const form = useForm<CreatePlanProp>(draft ?? defaultProjectProp);
 
+    return (
+        <ScrollNavLayout heading={{
+            title: "Project Plan",
+            description: `Create plan for ${form.data.name}`,
+        }}>
+            <CreatePlanPageInner form={form} />
+        </ScrollNavLayout>
+    )
+}
+
+export function CreatePlanPageInner({ form }: { form: InertiaForm<CreatePlanProp> }) {
+    const { scrollTo } = useScrollNav();
+    const [mode, setMode] = useState<'card' | 'path' | string>('form')
+
     const { data, setData, errors, post } = form;
 
     const saveDraft = () => {
@@ -85,7 +87,10 @@ export default function CreatePlanPage() {
         });
     }
 
+    const { sorted } = usePrerequisiteOrder<CreateWorkItem>(data.items);
+
     const addItem = () => {
+        const id = data.items.length > 0 ? data.items.sort((a, b) => b.id - a.id)[0].id + 1 : 1
         setData('items', [...data.items, {
             name: '',
             id: data.items.length > 0 ? data.items.sort((a, b) => b.id - a.id)[0].id + 1 : 1,
@@ -111,6 +116,7 @@ export default function CreatePlanPage() {
                 rate: 250
             }]
         }])
+        setTimeout(() => scrollTo(`item-card-${id}`), 0)
     }
 
     const updateItem = (id: number, field: keyof CreateWorkItem, value: CreateWorkItem[keyof CreateWorkItem]) => {
@@ -167,32 +173,8 @@ export default function CreatePlanPage() {
     }, [total_days]);
 
     return (
-        <ScrollNavLayout heading={{
-            title: "Project Plan",
-            description: `Create plan for ${data.name}`,
-        }}>
+        <>
             <ScrollNavAside>
-                <ScrollNavAsideHeader>
-                    Navigation
-                </ScrollNavAsideHeader>
-                <ScrollNavAsideButton id="information">
-                    <DynamicIcon name={data.icon} />
-                    Information
-                </ScrollNavAsideButton>
-                <ScrollNavAsideButton id="gantt">
-                    <DynamicIcon name={'gantt-chart'} />
-                    Gantt Chart
-                </ScrollNavAsideButton>
-                {data.items.map((item, index) => {
-                    {/* const item = data.items.filter(item => item.id == localItem.id)[0] */ }
-                    return (
-                        <ScrollNavAsideButton key={`item-card-${index}`} id={`item-card-${index}`}>
-                            <DynamicIcon name={item.icon} />
-                            {item.name ? item.name : 'Work Item ' + item.id}
-                        </ScrollNavAsideButton>
-                    )
-                })}
-
                 <ScrollNavAsideHeader>
                     View
                 </ScrollNavAsideHeader>
@@ -224,6 +206,37 @@ export default function CreatePlanPage() {
                         Save as Draft
                     </ScrollNavAsideButton>
                 </div>
+                <div onClick={saveDraft}>
+                    <ScrollNavAsideButton variant="default">
+                        <Save />
+                        Save Project
+                    </ScrollNavAsideButton>
+                </div>
+                {mode == 'form' && (
+                    <>
+                        <ScrollNavAsideHeader>
+                            Navigation
+                        </ScrollNavAsideHeader>
+                        <ScrollNavAsideButton id="information">
+                            <DynamicIcon name={data.icon} />
+                            Information
+                        </ScrollNavAsideButton>
+                        <ScrollNavAsideButton id="gantt">
+                            <DynamicIcon name={'gantt-chart'} />
+                            Gantt Chart
+                        </ScrollNavAsideButton>
+                        {sorted.map((item) => {
+                            return (
+                                <ScrollNavAsideButton key={`item-card-${item.id}`} id={`item-card-${item.id}`}>
+                                    <DynamicIcon name={item.icon} />
+                                    {item.name ? item.name : 'Work Item ' + item.id}
+                                </ScrollNavAsideButton>
+                            )
+                        })}
+                    </>
+                )}
+
+
             </ScrollNavAside>
             {mode == 'form' &&
                 <ScrollNavContent>
@@ -239,21 +252,24 @@ export default function CreatePlanPage() {
                     <div className="font-bold">
                         Item of Works
                     </div>
-                    {data.items.map((item, index) => (
-                        <ScrollNavItem id={`item-card-${index}`} key={index}>
-                            <CreateWorkItemCard item={item} items={data.items} errors={getItemErrors(index)}
-                                onChange={(field, value) => updateItem(item.id, field, value)}
-                                onRemove={() => removeItem(item.id)}
-                            />
-                        </ScrollNavItem>
-                    ))}
+                    {sorted.map((item, index) => {
+                        const originalIndex = data.items.findIndex(i => i.id === item.id)
+                        return (
+                            <ScrollNavItem id={`item-card-${item.id}`} key={item.id}>
+                                <CreateWorkItemCard item={item} items={data.items} errors={getItemErrors(originalIndex)}
+                                    onChange={(field, value) => updateItem(item.id, field, value)}
+                                    onRemove={() => removeItem(item.id)}
+                                />
+                            </ScrollNavItem>
+                        )
+                    })}
                     <MaterialDatalist />
                 </ScrollNavContent>
             }
             {mode === 'path' && <>
                 <PlanPath items={data.items} />
             </>}
-        </ScrollNavLayout >
+        </>
     )
 }
 

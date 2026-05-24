@@ -1,4 +1,3 @@
-import { usePlanContext } from "@/pages/plans/create";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
 import { CreateWorkItem } from "./create";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";

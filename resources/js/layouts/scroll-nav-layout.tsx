@@ -13,13 +13,13 @@ interface ScrollNavContextType {
     active: string
     setActive: (id: string) => void
     sectionRefs: RefObject<Record<string, HTMLDivElement | null>>,
-    scrollTo: (id: string) => void,
+    scrollTo: (id: string, behavior?: ScrollBehavior) => void,
     registerRef: (id: string, el: HTMLDivElement | null) => void
 }
 
 const ScrollNavContext = createContext<ScrollNavContextType | null>(null);
 
-function useScrollNav() {
+export function useScrollNav() {
     const ctx = useContext(ScrollNavContext)
 
     if (!ctx) throw new Error('useScrollNav must be used within <ScrollNavLayout>')
@@ -38,9 +38,9 @@ export function ScrollNavLayout({ children, heading: { title, description } }: P
 
     const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-    const scrollTo = (id: string) => {
+    const scrollTo = (id: string, behavior: ScrollBehavior = "smooth") => {
         setActive(id);
-        sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth' });
+        sectionRefs.current[id]?.scrollIntoView({ behavior: behavior });
     }
 
     const registerRef = (id: string, el: HTMLDivElement | null) => {
@@ -100,16 +100,17 @@ export function ScrollNavAsideHeader({ children }: PropsWithChildren) {
     )
 }
 
-export function ScrollNavAsideButton({ children, id, isActive }: PropsWithChildren<{
+export function ScrollNavAsideButton({ children, id, isActive, variant = "ghost" }: PropsWithChildren<{
     id?: string,
-    isActive?: boolean
+    isActive?: boolean,
+    variant?: "default" | "destructive" | "ghost" | "secondary" | "outline" | "link"
 }>) {
     const { scrollTo, active } = useScrollNav();
 
     return (
         <Button
             size="sm"
-            variant="ghost"
+            variant={variant}
             onClick={() => id && scrollTo(id)}
             asChild
             className={cn('w-full justify-start', {
@@ -135,7 +136,7 @@ export function ScrollNavContent({ children }: PropsWithChildren) {
                     "md:max-h-[calc(100vh-9.6rem)]": !open,
                     "md:max-h-[calc(100vh-10.6rem)]": open,
                 }])}>
-            <section className="space-y-6 md:w-2xl pb-20 pt-1">
+            <section className="space-y-6 xl:w-5xl md:w-2xl pb-20 pt-1">
                 {children}
             </section>
         </ScrollArea>

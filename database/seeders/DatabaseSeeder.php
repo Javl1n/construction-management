@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            MaterialSeeder::class
+            // MaterialSeeder::class
         ]);
     }
 }

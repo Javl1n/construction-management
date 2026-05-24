@@ -13,15 +13,10 @@ import SelectEngineer from "../engineers/select";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "../ui/input-group";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
 import { CreateWorkItem } from "../items/create";
+import { usePrerequisiteOrder } from "@/hooks/use-prerequisite-order";
 
 export default function ProjectEssentialsForm({ form: { data, setData } }: { form: InertiaFormProps<CreatePlanProp> }) {
-    // const labor_cost = (
-    //     data.laborers.map(
-    //         (laborer) => laborer.quantity * laborer.rate
-    //     ).reduce((acc, val) => acc + val, 0)
-    //     * data.planned_days
-    // )
-
+    const { sorted } = usePrerequisiteOrder<CreateWorkItem>(data.items);
     const itemTotal = (item: CreateWorkItem) => {
         const materialCost = (
             item.materials.map(
@@ -114,7 +109,7 @@ export default function ProjectEssentialsForm({ form: { data, setData } }: { for
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data.items.map((item, index) => (
+                        {sorted.map((item, index) => (
                             <TableRow key={index}>
                                 <TableCell className="w-full">
                                     {item.name ? item.name : `Work Item ${item.id}`}

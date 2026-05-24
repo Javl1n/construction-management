@@ -6,36 +6,17 @@ import { Item, ItemActions, ItemContent, ItemMedia } from "../ui/item";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { PlaceholderPattern } from "../ui/placeholder-pattern";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { usePrerequisiteOrder } from "@/hooks/use-prerequisite-order";
 
-
-function computeStartDays(items: CreateWorkItem[]) {
-    const map = Object.fromEntries(items.map(i => [i.id, i]));
-    const startDay: Record<number, number> = {};
-
-    function resolve(id: number): number {
-        if (startDay[id] !== undefined) return startDay[id];
-        const item = map[id];
-        if (!item.prerequisites.length) return (startDay[id] = 1);
-
-        const depEnds = item.prerequisites.map(
-            pid => resolve(pid) + map[pid].planned_days - 1
-        )
-
-        return (startDay[id] = Math.max(...depEnds) + 1);
-    }
-
-    items.forEach(i => resolve(i.id));
-    return startDay;
-}
 
 export function GanttChartPlanCard({ items }: { items: CreateWorkItem[] }) {
-    const startDays = computeStartDays(items)
-    const totalDays = Math.max(...items.map(i => startDays[i.id] + i.planned_days - 1))
+    const { startDays, totalDays, sorted } = usePrerequisiteOrder<CreateWorkItem>(items)
     const totalDaysArray = Array.from({ length: totalDays }, (_, i) => i + 1)
-    const sorted = [...items].sort((a, b) => startDays[a.id] - startDays[b.id]);
     const onSchedule = (item: CreateWorkItem, day: number): boolean => {
         return day >= startDays[item.id] && day <= item.planned_days + startDays[item.id] - 1
     }
+
     return (
         <Card>
             <CardHeader>
@@ -67,7 +48,7 @@ export function GanttChartPlanCard({ items }: { items: CreateWorkItem[] }) {
                             </div>
                         ))}
                     </div>
-                    <div className="flex-1 overflow-x-scroll">
+                    <ScrollArea className="flex-1 overflow-x-scroll">
                         <div className="flex">
                             {totalDaysArray.map((number, index) => (
                                 <div key={index} className="border h-10 min-w-15 flex flex-col justify-center text-center text-muted-foreground text-sm">
@@ -90,7 +71,8 @@ export function GanttChartPlanCard({ items }: { items: CreateWorkItem[] }) {
                                 ))}
                             </div>
                         ))}
-                    </div>
+                        <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
                 </div>
             </CardContent>
         </Card>

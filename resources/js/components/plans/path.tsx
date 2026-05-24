@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { ReactFlow, useNodesState, useEdgesState, NodeProps, Node, Handle, Position } from '@xyflow/react';
 import { cn } from "@/lib/utils";
 import '@xyflow/react/dist/style.css';
-import { IconName } from "lucide-react/dynamic";
+import { DynamicIcon, IconName } from "lucide-react/dynamic";
 import { getLayoutedElements } from "@/lib/graph-layout";
 
 function itemsToGraph(items: CreateWorkItem[]) {
@@ -43,10 +43,13 @@ function ItemNode({ data }: NodeProps<Node<{
     workers: number
 }, 'item'>>) {
     return (
-        <div className="border bg-card rounded overflow-hidden w-40 text-sm">
+        <div className="border bg-card rounded overflow-hidden min-w-40 text-sm">
             <Handle type="target" position={Position.Left} />
-            <div className="bg-accent p-1 font-bold">
-                {data.label}
+            <div className="bg-accent p-1 pe-5 font-bold flex gap-1">
+                <DynamicIcon name={data.icon} className="h-4 w-4 my-auto" />
+                <div>
+                    {data.label}
+                </div>
             </div>
             <div className="p-1">
                 <div className="flex justify-between">
