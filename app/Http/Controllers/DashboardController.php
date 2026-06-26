@@ -18,7 +18,7 @@ class DashboardController extends Controller
         }
 
         if ($project && $project->items->isEmpty()) {
-            return redirect()->route('items.create');
+            return redirect()->route('plans.create');
         }
 
         return inertia()->render('dashboard');

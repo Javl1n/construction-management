@@ -1,12 +1,15 @@
+import DeveloperDraftJSON from "@/components/developer/draft-json";
 import CreateWorkItemCard, { CreateWorkItem } from "@/components/items/create";
 import { MaterialDatalist } from "@/components/materials/datalist";
 import { GanttChartPlanCard } from "@/components/plans/gantt";
 import { PlanPath } from "@/components/plans/path";
 import ProjectEssentialsForm from "@/components/project/essentials-form";
+import { FieldError } from "@/components/ui/field";
 import { usePrerequisiteOrder } from "@/hooks/use-prerequisite-order";
 import { ScrollNavAside, ScrollNavAsideButton, ScrollNavAsideHeader, ScrollNavContent, ScrollNavItem, ScrollNavLayout, useScrollNav } from "@/layouts/scroll-nav-layout";
 import drafts from "@/routes/drafts";
-import items from "@/routes/items";
+import plans from "@/routes/plans";
+import projects from "@/routes/projects";
 import { Auth, Project, User } from "@/types";
 import { InertiaForm, useForm, usePage } from "@inertiajs/react";
 import { ChartGanttIcon, FileClock, FormInputIcon, LucideWalletCards, Plus, Save, TableIcon, Users, WorkflowIcon } from "lucide-react";
@@ -83,8 +86,25 @@ export function CreatePlanPageInner({ form }: { form: InertiaForm<CreatePlanProp
         post(drafts.store().url, {
             onSuccess: () => {
                 toast.success("Saved to draft")
+            },
+            onBefore: () => {
+                toast.loading("Saving to draft")
             }
         });
+    }
+
+    const saveProject = () => {
+        post(plans.store().url, {
+            onSuccess: () => {
+                toast.success("Project saved");
+            },
+            onBefore: () => {
+                toast.loading("Generating Project")
+            },
+            onError: () => {
+                toast.error("Saving Failed")
+            },
+        })
     }
 
     const { sorted } = usePrerequisiteOrder<CreateWorkItem>(data.items);
@@ -206,12 +226,15 @@ export function CreatePlanPageInner({ form }: { form: InertiaForm<CreatePlanProp
                         Save as Draft
                     </ScrollNavAsideButton>
                 </div>
-                <div onClick={saveDraft}>
+                <div onClick={saveProject}>
                     <ScrollNavAsideButton variant="default">
                         <Save />
                         Save Project
                     </ScrollNavAsideButton>
                 </div>
+
+                <DeveloperDraftJSON />
+
                 {mode == 'form' && (
                     <>
                         <ScrollNavAsideHeader>
@@ -251,6 +274,9 @@ export function CreatePlanPageInner({ form }: { form: InertiaForm<CreatePlanProp
                     </ScrollNavItem>
                     <div className="font-bold">
                         Item of Works
+                        <FieldError>
+                            {errors.items}
+                        </FieldError>
                     </div>
                     {sorted.map((item, index) => {
                         const originalIndex = data.items.findIndex(i => i.id === item.id)
@@ -277,7 +303,7 @@ CreatePlanPage.layout = {
     breadcrumbs: [
         {
             title: 'Project Plan',
-            href: items.create(),
+            href: plans.create(),
         },
     ],
 };

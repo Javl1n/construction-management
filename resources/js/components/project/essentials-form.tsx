@@ -1,7 +1,7 @@
 import { FileText, FormInput } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Item, ItemContent, ItemDescription, ItemHeader, ItemMedia, ItemTitle } from "../ui/item";
-import { Field, FieldLabel } from "../ui/field";
+import { Field, FieldError, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { InertiaFormProps, usePage } from "@inertiajs/react";
 import { CreatePlanProp } from "@/pages/plans/create";
@@ -15,7 +15,7 @@ import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, Table
 import { CreateWorkItem } from "../items/create";
 import { usePrerequisiteOrder } from "@/hooks/use-prerequisite-order";
 
-export default function ProjectEssentialsForm({ form: { data, setData } }: { form: InertiaFormProps<CreatePlanProp> }) {
+export default function ProjectEssentialsForm({ form: { data, setData, errors } }: { form: InertiaFormProps<CreatePlanProp> }) {
     const { sorted } = usePrerequisiteOrder<CreateWorkItem>(data.items);
     const itemTotal = (item: CreateWorkItem) => {
         const materialCost = (
@@ -71,6 +71,12 @@ export default function ProjectEssentialsForm({ form: { data, setData } }: { for
                         Project Name
                     </FieldLabel>
                     <Input value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                    <FieldError>
+                        {errors.name}
+                    </FieldError>
+                    <FieldError>
+                        {errors.icon}
+                    </FieldError>
                 </Field>
                 <Field className="grid grid-cols-3">
                     <Field className="gap-1">
@@ -79,7 +85,7 @@ export default function ProjectEssentialsForm({ form: { data, setData } }: { for
                         </FieldLabel>
                         <InputGroup>
                             <InputGroupInput
-                                type="number" value={data.planned_days} readOnly
+                                type="text" value={data.planned_days} readOnly
                                 onChange={(e) => setData('planned_days', parseInt(e.target.value))}
                             />
                             <InputGroupAddon align={'inline-end'}>
@@ -92,6 +98,9 @@ export default function ProjectEssentialsForm({ form: { data, setData } }: { for
                             Engineer
                         </FieldLabel>
                         <SelectEngineer value={data.engineer} onChange={(value) => setData('engineer', value)} />
+                        <FieldError>
+                            {errors.engineer}
+                        </FieldError>
                     </Field>
                 </Field>
                 <Table>

@@ -6,6 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Input } from "../ui/input";
 import { usePage } from "@inertiajs/react";
 import { Material } from "@/types";
+import InputError from "../input-error";
 
 export type CreateMaterial = {
     name: string,
@@ -103,6 +104,7 @@ export default function CreateMaterialsTable({ materials, onChange }: {
                                                 value={material.name} placeholder="ex. Steel Beams..."
                                                 onChange={(e) => updateMaterial(index, 'name', e.target.value)}
                                             />
+                                            <InputError />
                                         </TableCell>
                                     </TooltipTrigger>
                                     <TooltipContent side="left">

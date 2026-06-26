@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DraftController;
-use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ProjectPlanController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +17,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::inertia('empty-project', 'empty-project')->name('empty-project');
 
-    Route::post('/draft', [DraftController::class, 'store'])->name('drafts.store');
+    Route::prefix('drafts')->name('drafts.')->controller(DraftController::class)
+        ->group(function () {
+            Route::post('/', 'store')->name('store');
+            Route::get('/export', 'export')->name('export');
+            Route::post('/import', 'import')->name('import');
+        });
+
     Route::name('projects.')->prefix('project')->controller(ProjectController::class)
         ->group(function () {
             // Route::get('/', 'show')->name('show');
@@ -25,10 +31,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/', 'store')->name('store');
         });
 
-
-    Route::name('items.')->prefix('items')->controller(ItemController::class)
+    Route::name('plans.')->prefix('plans')->controller(ProjectPlanController::class)
         ->group(function () {
             Route::get('create', 'create')->name('create')->middleware('project');
+            Route::post('/', 'store')->name('store')->middleware('project');
         });
 });
 

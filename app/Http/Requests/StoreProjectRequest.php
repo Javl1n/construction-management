@@ -35,7 +35,7 @@ class StoreProjectRequest extends FormRequest
             'icon' => [
                 'required',
                 'string',
-            ]
+            ],
         ];
     }
 }

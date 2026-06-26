@@ -39,6 +39,15 @@ class DraftController extends Controller
         return back();
     }
 
+    public function export()
+    {
+        $project = Project::find(session('current_project_id'));
+
+        return response()->streamDownload(function () use ($project) {
+            echo json_encode($project->draft->data, JSON_PRETTY_PRINT);
+        }, 'data.json', ['Content-Type' => 'application/json']);
+    }
+
     /**
      * Display the specified resource.
      */
