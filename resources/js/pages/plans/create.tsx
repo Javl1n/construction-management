@@ -83,28 +83,41 @@ export function CreatePlanPageInner({ form }: { form: InertiaForm<CreatePlanProp
     const { data, setData, errors, post } = form;
 
     const saveDraft = () => {
-        post(drafts.store().url, {
-            onSuccess: () => {
-                toast.success("Saved to draft")
-            },
-            onBefore: () => {
-                toast.loading("Saving to draft")
-            }
+        const promise = new Promise((resolve, reject) => {
+            post(drafts.store().url, {
+                onSuccess: () => {
+                    resolve({})
+                },
+            });
         });
+        toast.promise(promise, {
+            loading: 'Saving to draft...',
+            success: 'Saved to draft',
+        })
     }
 
     const saveProject = () => {
-        post(plans.store().url, {
-            onSuccess: () => {
-                toast.success("Project saved");
-            },
-            onBefore: () => {
-                toast.loading("Generating Project")
-            },
-            onError: () => {
-                toast.error("Saving Failed")
-            },
+        const promise = new Promise((resolve, reject) => {
+            post(plans.store().url, {
+                onSuccess: () => {
+                    resolve({});
+                },
+                onError: (errors) => {
+                    reject();
+                    Object.values(errors).map((error, index) => {
+                        toast.error("Form Error", {
+                            description: error
+                        })
+                    })
+                },
+            })
         })
+
+        toast.promise(promise, {
+            loading: 'Generating project...',
+            success: 'Project saved',
+            error: 'Project failed to save'
+        });
     }
 
     const { sorted } = usePrerequisiteOrder<CreateWorkItem>(data.items);

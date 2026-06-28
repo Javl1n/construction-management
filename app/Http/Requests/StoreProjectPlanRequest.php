@@ -85,4 +85,30 @@ class StoreProjectPlanRequest extends FormRequest
 
         return $rules;
     }
+
+    public function attributes(): array
+    {
+        return [
+            'name' => 'project name',
+
+            'items.*.name' => 'item name',
+            'items.*.planned_days' => 'item planned days',
+            'items.*.quantity' => 'item quantity',
+            'items.*.unit' => 'item unit',
+            'items.*.price' => 'item price',
+
+            'items.*.materials.*.name' => 'material name',
+            'items.*.materials.*.unit' => 'material unit',
+            'items.*.materials.*.quantity' => 'material quantity',
+            'items.*.materials.*.price' => 'material price',
+
+            'items.*.laborers.*.role' => 'labor role',
+            'items.*.laborers.*.quantity' => 'labor quantity',
+            'items.*.laborers.*.rate' => 'labor rate',
+
+            'items.*.equipment.*.name' => 'equipment name',
+            'items.*.equipment.*.quantity' => 'equipment quantity',
+            'items.*.equipment.*.rate' => 'equipment rate',
+        ];
+    }
 }
