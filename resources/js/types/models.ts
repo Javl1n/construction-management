@@ -33,18 +33,18 @@ export interface Item {
     materials: Material[]
     prerequisites: Item[]
     dependents: Item[]
-    equiment: Equipment[]
+    equipment: Equipment[]
     // counts
     materials_count: number
     prerequisites_count: number
     dependents_count: number
-    equiment_count: number
+    equipment_count: number
     // exists
     project_exists: boolean
     materials_exists: boolean
     prerequisites_exists: boolean
     dependents_exists: boolean
-    equiment_exists: boolean
+    equipment_exists: boolean
 }
 
 export interface Material {
@@ -134,6 +134,61 @@ export interface Purchase {
 //     projects_exists: boolean
 //     notifications_exists: boolean
 // }
+
+export interface DashboardStats {
+    completion_pct: number
+    planned_pct: number | null
+    total_quantity: number
+    completed_quantity: number
+    total_items: number
+    planned_days: number | null
+    days_elapsed: number | null
+    total_estimated_cost: number
+    total_purchased: number
+}
+
+export interface DashboardWorker {
+    id: number
+    role: string
+    quantity: number
+    rate: number
+}
+
+export interface DashboardItem {
+    id: number
+    name: string
+    icon: IconName
+    days: number
+    quantity: number
+    unit: string
+    quantity_done: number
+    planned_quantity_done: number | null
+    cost: number
+    prerequisites: number[]
+    blocked_by: string | null
+    log_days: number
+    workers: DashboardWorker[]
+}
+
+export interface DashboardPurchase {
+    id: number
+    purchased_at: string
+    total: number
+    items_count: number
+}
+
+export interface DashboardCostBreakdown {
+    labor: number
+    equipment: number
+    materials: number
+}
+
+export interface DashboardPageProps {
+    stats: DashboardStats
+    items: DashboardItem[]
+    purchases: DashboardPurchase[]
+    cost_breakdown: DashboardCostBreakdown
+}
 
 export interface Worker {
     // columns

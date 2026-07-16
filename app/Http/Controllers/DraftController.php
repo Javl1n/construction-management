@@ -6,6 +6,7 @@ use App\Http\Requests\StoreDraftRequest;
 use App\Http\Requests\UpdateDraftRequest;
 use App\Models\Draft;
 use App\Models\Project;
+use Illuminate\Http\Request;
 
 class DraftController extends Controller
 {
@@ -46,6 +47,27 @@ class DraftController extends Controller
         return response()->streamDownload(function () use ($project) {
             echo json_encode($project->draft->data, JSON_PRETTY_PRINT);
         }, 'data.json', ['Content-Type' => 'application/json']);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file'],
+        ]);
+
+        $data = json_decode($request->file('file')->get(), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['message' => 'Invalid JSON file.'], 422);
+        }
+
+        $project = Project::find(session('current_project_id'));
+
+        $project->draft()->updateOrCreate([], [
+            'data' => $data
+        ]);
+
+        return response()->json(['message' => 'Draft imported.']);
     }
 
     /**

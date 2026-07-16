@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DraftController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\ProjectPlanController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\WorkerController;
@@ -28,6 +29,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->group(function () {
             // Route::get('/', 'show')->name('show');
             Route::post('/switch', 'switch')->name('switch');
+            Route::post('/start', 'start')->name('start')->middleware('project');
+            Route::post('/', 'store')->name('store');
+        });
+
+    Route::name('logs.')->prefix('items/{item}/logs')->controller(LogController::class)
+        ->middleware('project')
+        ->group(function () {
             Route::post('/', 'store')->name('store');
         });
 

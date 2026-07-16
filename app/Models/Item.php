@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Worker;
 
-#[Fillable(['name', 'date_started', 'estimated_days', 'date_ended', 'workers', 'worker_rate'])]
+#[Fillable(['name', 'icon', 'quantity', 'unit', 'days'])]
 class Item extends Model
 {
     /** @use HasFactory<\Database\Factories\ItemFactory> */
@@ -36,8 +37,18 @@ class Item extends Model
         return $this->belongsToMany(Item::class, 'prerequisites', 'prerequisite_id', 'item_id');
     }
 
-    public function equiment(): HasMany
+    public function workers(): HasMany
+    {
+        return $this->hasMany(Worker::class);
+    }
+
+    public function equipment(): HasMany
     {
         return $this->hasMany(Equipment::class);
+    }
+
+    public function logs(): HasMany
+    {
+        return $this->hasMany(ItemLog::class);
     }
 }

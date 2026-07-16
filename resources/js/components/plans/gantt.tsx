@@ -10,11 +10,16 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { usePrerequisiteOrder } from "@/hooks/use-prerequisite-order";
 
 
-export function GanttChartPlanCard({ items }: { items: CreateWorkItem[] }) {
+export function GanttChartPlanCard({ items, progressDays }: { items: CreateWorkItem[], progressDays?: Record<number, number> }) {
     const { startDays, totalDays, sorted } = usePrerequisiteOrder<CreateWorkItem>(items)
     const totalDaysArray = Array.from({ length: totalDays }, (_, i) => i + 1)
     const onSchedule = (item: CreateWorkItem, day: number): boolean => {
         return day >= startDays[item.id] && day <= item.planned_days + startDays[item.id] - 1
+    }
+    const onActual = (item: CreateWorkItem, day: number): boolean => {
+        if (!progressDays) return false
+        const doneDays = progressDays[item.id] ?? 0
+        return day >= startDays[item.id] && day < startDays[item.id] + doneDays
     }
 
     return (
@@ -36,14 +41,14 @@ export function GanttChartPlanCard({ items }: { items: CreateWorkItem[] }) {
             </CardHeader>
             <CardContent>
                 <div className="flex border">
-                    <div className="grid">
+                    <div className="grid w-40 shrink-0">
                         <div className="border h-10 flex flex-col justify-center px-2">
                             <div>
                                 Items
                             </div>
                         </div>
                         {sorted.map((item, index) => (
-                            <div key={index} className="border h-10 flex flex-col justify-center px-2">
+                            <div key={index} className="border h-10 flex flex-col justify-center px-2 truncate">
                                 {item.name}
                             </div>
                         ))}
@@ -59,13 +64,12 @@ export function GanttChartPlanCard({ items }: { items: CreateWorkItem[] }) {
                         {sorted.map((item, index) => (
                             <div key={index} className="flex">
                                 {totalDaysArray.map((day) => (
-                                    <div className={cn([
-                                        "border h-10 min-w-15 relative",
-                                        onSchedule(item, day) && ""
-                                    ])}
-                                    >
-                                        {onSchedule(item, day) && (
-                                            <PlaceholderPattern className="w-full h-full stroke-primary" />
+                                    <div key={day} className="border h-10 min-w-15 relative overflow-hidden">
+                                        {onSchedule(item, day) && !onActual(item, day) && (
+                                            <PlaceholderPattern className="absolute inset-0 size-full stroke-primary/50" />
+                                        )}
+                                        {onActual(item, day) && (
+                                            <div className="absolute inset-0 bg-emerald-500/30" />
                                         )}
                                     </div>
                                 ))}

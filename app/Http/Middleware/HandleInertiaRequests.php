@@ -36,7 +36,10 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $projects = Project::all();
+        $user = $request->user();
+        $projects = $user?->hasRole(['admin'])
+            ? Project::all()
+            : ($user?->projects()->get() ?? collect());
 
         return [
             ...parent::share($request),
@@ -44,7 +47,9 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'project' => $projects?->find(session('current_project_id')),
+            'project' => session()->has('current_project_id')
+                ? $projects->find(session('current_project_id'))
+                : null,
             'projects' => $projects,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

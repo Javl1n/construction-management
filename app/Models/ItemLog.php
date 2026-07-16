@@ -3,20 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['role', 'quantity', 'rate'])]
-class Worker extends Model
+#[Fillable(['item_id', 'date', 'quantity'])]
+class ItemLog extends Model
 {
-    /** @use HasFactory<\Database\Factories\WorkerFactory> */
-    use HasFactory;
+    protected $table = 'logs';
+
+    protected $casts = [
+        'date'     => 'date',
+        'quantity' => 'float',
+    ];
 
     public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
+    }
+
+    public function workerLogs(): HasMany
+    {
+        return $this->hasMany(WorkerLog::class, 'log_id');
     }
 }

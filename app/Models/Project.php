@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['name', 'icon', 'date_started', 'date_ended', 'planned_days'])]
+#[Fillable(['name', 'icon', 'user_id', 'date_started', 'date_ended', 'planned_days'])]
 class Project extends Model
 {
     /** @use HasFactory<\Database\Factories\ProjectFactory> */

@@ -36,7 +36,7 @@ export default function CreateMaterialsTable({ materials, onChange }: {
 
     const updateMaterial = (index: number, field: keyof CreateMaterial, value: CreateMaterial[keyof CreateMaterial]): void => {
         if (field == 'name' && materialExists(value as CreateMaterial['name'])) {
-            const material = materials.filter((material) => material.name === value)[0];
+            const material = materialList.filter((material) => material.name === value)[0];
 
             onChange(
                 materials.map((item, i) =>

@@ -18,11 +18,22 @@ class ProjectController extends Controller
         //
     }
 
+    public function start(Request $request)
+    {
+        $project = Project::findOrFail(session('current_project_id'));
+
+        $project->update(['date_started' => now()->toDateString()]);
+
+        return back();
+    }
+
     public function switch(Request $request)
     {
         $projectId = $request->input('project_id');
 
-        $project = $request->user()->projects()->findOrFail($projectId);
+        $project = $request->user()->hasRole(['admin'])
+            ? Project::findOrFail($projectId)
+            : $request->user()->projects()->findOrFail($projectId);
 
         session(['current_project_id' => $project->id]);
 
@@ -47,7 +58,7 @@ class ProjectController extends Controller
 
         session(['current_project_id' => $project->id]);
 
-        return Inertia::location(route('items.create'));
+        return Inertia::location(route('plans.create'));
     }
 
     /**
