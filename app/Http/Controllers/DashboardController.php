@@ -31,7 +31,7 @@ class DashboardController extends Controller
             'items.equipment',
             'items.materials',
             'items.prerequisites',
-            'items.logs',
+            'items.logs.workerLogs',
             'purchases.materials',
         ])->find($projectId);
 
@@ -165,6 +165,22 @@ class DashboardController extends Controller
             ])
             ->values();
 
+        $logsData = $project->items
+            ->flatMap(fn($item) => $item->logs->map(fn($log) => [
+                'id'        => $log->id,
+                'date'      => $log->date->toDateString(),
+                'item_name' => $item->name,
+                'item_icon' => $item->icon,
+                'quantity'  => $log->quantity,
+                'unit'      => $item->unit,
+                'workers'   => $log->workerLogs->map(fn($w) => [
+                    'role'     => $w->role,
+                    'quantity' => $w->quantity,
+                ])->values(),
+            ]))
+            ->sortByDesc('date')
+            ->values();
+
         return inertia()->render('dashboard', [
             'stats' => [
                 'completion_pct'       => $completionPct,
@@ -179,6 +195,7 @@ class DashboardController extends Controller
             ],
             'items'          => $itemsData,
             'purchases'      => $purchasesData,
+            'logs'           => $logsData,
             'cost_breakdown' => [
                 'labor'     => $totalLaborCost,
                 'equipment' => $totalEquipmentCost,

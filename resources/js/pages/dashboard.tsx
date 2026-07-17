@@ -189,7 +189,7 @@ function LogDialog({ item }: { item: DashboardItem }) {
 
 export default function Dashboard() {
     const props = usePage().props as unknown as { project: Project } & DashboardPageProps;
-    const { project, stats, items, purchases, cost_breakdown } = props;
+    const { project, stats, items, purchases, logs, cost_breakdown } = props;
 
     if (!project) {
         return <EmptyProject />;
@@ -438,6 +438,48 @@ export default function Dashboard() {
                                         <TableCell className="text-right font-semibold">{formatPeso(stats.total_purchased)}</TableCell>
                                     </TableRow>
                                 </TableFooter>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {/* Progress Logs */}
+                {logs.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Progress Logs</CardTitle>
+                            <CardDescription>Daily progress entries across all work items</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead>Item</TableHead>
+                                        <TableHead>Workers</TableHead>
+                                        <TableHead className="text-right">Progress</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {logs.map(log => (
+                                        <TableRow key={log.id}>
+                                            <TableCell>{formatDate(log.date)}</TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <DynamicIcon name={log.item_icon} className="size-4 text-muted-foreground" />
+                                                    {log.item_name}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {log.workers.length > 0
+                                                    ? log.workers.map(w => `${w.quantity} ${w.role}`).join(', ')
+                                                    : <span className="text-muted-foreground">—</span>
+                                                }
+                                            </TableCell>
+                                            <TableCell className="text-right">{log.quantity} {log.unit}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
                             </Table>
                         </CardContent>
                     </Card>

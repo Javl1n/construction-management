@@ -183,10 +183,26 @@ export interface DashboardCostBreakdown {
     materials: number
 }
 
+export interface DashboardLogWorker {
+    role: string
+    quantity: number
+}
+
+export interface DashboardLog {
+    id: number
+    date: string
+    item_name: string
+    item_icon: IconName
+    quantity: number
+    unit: string
+    workers: DashboardLogWorker[]
+}
+
 export interface DashboardPageProps {
     stats: DashboardStats
     items: DashboardItem[]
     purchases: DashboardPurchase[]
+    logs: DashboardLog[]
     cost_breakdown: DashboardCostBreakdown
 }
 
